@@ -1,6 +1,6 @@
 name: "📝 문서"
 description: "문서 작성 및 수정"
-labels: ["docs"]
+labels: ["📝 docs"]
 body:
   - type: textarea
     id: summary

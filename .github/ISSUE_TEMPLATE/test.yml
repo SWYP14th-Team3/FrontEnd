@@ -1,6 +1,6 @@
 name: "🧪 테스트"
 description: "테스트 코드 작성 및 개선"
-labels: ["test"]
+labels: ["🧪 test"]
 body:
   - type: textarea
     id: summary

@@ -1,6 +1,6 @@
 name: "🔧 Chore"
 description: "환경설정, 리팩토링, 의존성 업데이트 등"
-labels: ["chore"]
+labels: ["🔧 chore"]
 body:
   - type: textarea
     id: summary
