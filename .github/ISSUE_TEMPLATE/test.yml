@@ -1,0 +1,28 @@
+name: "🧪 테스트"
+description: "테스트 코드 작성 및 개선"
+labels: ["test"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: "📌 개요"
+      placeholder: "어떤 테스트를 추가/수정하는지 설명해주세요"
+    validations:
+      required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: "✅ 작업 내용"
+      value: |
+        - [ ]
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: "📝 참고 사항"
+      placeholder: "테스트 범위, 관련 기능 등 참고할 내용이 있다면 작성해주세요"
+    validations:
+      required: false
