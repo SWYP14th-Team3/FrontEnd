@@ -1,0 +1,87 @@
+name: Claude PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    if: ${{ !github.event.pull_request.draft }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          use_sticky_comment: true
+          track_progress: true
+          include_fix_links: true
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            이 PR의 변경 사항을 아래 리뷰 기준에 따라 검토하세요.
+            이전 리뷰에서 지적한 내용이 해결되었는지도 확인하세요.
+
+            ## 리뷰 기준 (심각도순)
+
+            ### 🔴 CRITICAL — 보안 / 데이터 정합성
+            - XSS 취약점 (dangerouslySetInnerHTML, 사용자 입력 미이스케이프)
+            - 환경변수/시크릿 하드코딩 (API 키, 토큰 등이 코드에 직접 포함)
+            - 서버 컴포넌트에서 클라이언트 전용 API 사용 (useState, useEffect 등 'use client' 없이 사용)
+            - Pages Router 사용 (App Router만 허용)
+
+            ### 🟠 HIGH — 성능 / 아키텍처
+            - useMemo, useCallback, React.memo 수동 사용 (React Compiler 활성화 상태)
+            - 불필요한 'use client' 선언 (서버 컴포넌트로 충분한데 클라이언트로 선언)
+            - export default 사용 (page.tsx, layout.tsx, error.tsx 등 Next.js 규약 파일 제외)
+            - barrel export (index.ts) 사용
+            - 순차 fetch에서 Promise.all 누락 (독립적인 요청을 병렬화 가능한 경우)
+
+            ### 🟡 MEDIUM — 타입 / 컨벤션
+            - any 타입 사용
+            - 상대 경로 import (@/ alias 미사용, 같은 디렉토리 내 제외)
+            - 네이밍 규칙 위반 (컴포넌트 PascalCase, 훅 use 접두사, 상수 UPPER_SNAKE_CASE)
+            - 화살표 함수로 컴포넌트 선언 (함수 선언문 사용 규칙)
+            - cn() 미사용 (조건부 className에 직접 템플릿 리터럴 사용)
+            - 파일 위치 규칙 위반 (페이지 전용 컴포넌트가 _components/ 외부에 위치)
+
+            ## 경로별 중점 확인
+            - src/app/** → App Router 규칙, 서버/클라이언트 분리, 레이아웃 구조
+            - src/components/** → 컴포넌트 패턴 (cn, cva), named export, Props 타입
+            - src/lib/**, src/hooks/** → 유틸 네이밍, 훅 규칙, 타입 안전성
+            - src/types/** → 타입 설계, 불필요한 any
+
+            ## 출력 규칙
+            - 발견된 이슈만 심각도별로 정리 (이슈 없는 카테고리는 생략)
+            - 해당 PR 변경 파일과 무관한 규칙은 체크하지 않기
+            - 구체적인 코드 이슈는 인라인 코멘트 + GitHub Suggestion 블록으로 수정 제안
+            - PR 전체 코멘트는 요약 + 결론만 20줄 이내
+            - synchronize 이벤트 시 이전 리뷰와 동일 내용 반복 금지
+            - "잘 작성된 점"은 정말 돋보이는 패턴만 1-2줄로
+
+            ## 리뷰 제외 항목 (Prettier + ESLint + lint-staged가 자동 처리)
+            - 들여쓰기, 줄바꿈, 따옴표 스타일
+            - Tailwind 클래스 순서
+            - import 순서
+            - trailing comma, 세미콜론
+            - 개인 취향 수준의 네이밍 대안 제시
+
+            인라인 코멘트에는 반드시 `confirmed: true`를 사용하세요.
+            PR 전체 요약은 `gh pr comment`로 작성하세요.
+            리뷰 텍스트를 메시지로 반환하지 말고, 반드시 GitHub 코멘트로만 게시하세요.
+
+          claude_args: |
+            --model claude-sonnet-4-5-20250929
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
