@@ -7,7 +7,8 @@ export async function POST() {
     clearAuthCookies(cookieStore);
 
     return Response.json({ status: 200, message: '로그아웃 성공', data: { success: true } });
-  } catch {
+  } catch (error) {
+    console.error('[Logout] Error:', error);
     return Response.json({ status: 500, message: '내부 서버 오류', data: null }, { status: 500 });
   }
 }

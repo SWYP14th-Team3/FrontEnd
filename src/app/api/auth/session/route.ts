@@ -38,7 +38,13 @@ export async function POST(request: Request) {
       );
     }
 
-    const { accessToken, refreshToken } = (await backendResponse.json()) as {
+    const backendData = await backendResponse.json();
+
+    if (!backendData?.accessToken || !backendData?.refreshToken) {
+      return Response.json({ status: 500, message: '인증 토큰을 받지 못했습니다.', data: null }, { status: 500 });
+    }
+
+    const { accessToken, refreshToken } = backendData as {
       accessToken: string;
       refreshToken: string;
     };
@@ -47,7 +53,8 @@ export async function POST(request: Request) {
     setAuthCookies(cookieStore, accessToken, refreshToken);
 
     return Response.json({ status: 200, message: '로그인 성공', data: { success: true } });
-  } catch {
+  } catch (error) {
+    console.error('[OAuth Session] Error:', error);
     return Response.json({ status: 500, message: '내부 서버 오류', data: null }, { status: 500 });
   }
 }
