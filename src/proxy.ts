@@ -5,8 +5,7 @@ import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY, BASE_COOKIE_OPTIONS, REFRESH_COOKI
 
 const PROTECTED_ROUTES = ['/result', '/history'];
 
-// TODO: 백엔드 refresh 엔드포인트 확정 후 수정
-const REFRESH_ENDPOINT = `${process.env.BACKEND_URL}/auth/refresh`;
+const REFRESH_ENDPOINT = `${process.env.BACKEND_URL}/api/auth/reissue`;
 
 export async function proxy(request: NextRequest) {
   const accessToken = request.cookies.get(ACCESS_TOKEN_KEY)?.value;
@@ -39,8 +38,7 @@ async function attemptRefresh(request: NextRequest, refreshToken: string) {
   try {
     const res = await fetch(REFRESH_ENDPOINT, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refreshToken }),
+      headers: { Cookie: `refreshToken=${refreshToken}` },
     });
 
     if (res.ok) {
