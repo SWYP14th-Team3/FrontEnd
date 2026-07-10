@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { postSocialLogin, postLogout } from './index';
+import { postSocialLogin, postLogout } from './api';
 
 import type { UseMutationOptions } from '@tanstack/react-query';
 import type { SocialLoginRequest, SocialLoginResponse, LogoutResponse } from './types';
