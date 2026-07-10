@@ -39,12 +39,13 @@ export async function POST(request: Request) {
     }
 
     const backendData = await backendResponse.json();
+    const data = backendData?.data;
 
-    if (!backendData?.accessToken || !backendData?.refreshToken) {
+    if (!data?.accessToken || !data?.refreshToken) {
       return Response.json({ status: 500, message: '인증 토큰을 받지 못했습니다.', data: null }, { status: 500 });
     }
 
-    const { accessToken, refreshToken } = backendData as {
+    const { accessToken, refreshToken } = data as {
       accessToken: string;
       refreshToken: string;
     };
