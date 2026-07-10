@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { clearAuthCookies, ACCESS_TOKEN_KEY } from '@/lib/cookies';
+import { clearAuthCookies, ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@/lib/cookies';
 
 export async function POST() {
   try {
@@ -9,9 +9,14 @@ export async function POST() {
     if (accessToken) {
       const backendUrl = process.env.BACKEND_URL;
       if (backendUrl) {
+        const refreshToken = cookieStore.get(REFRESH_TOKEN_KEY)?.value;
         await fetch(`${backendUrl}/api/auth/logout`, {
           method: 'POST',
-          headers: { Authorization: `Bearer ${accessToken}` },
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ refreshToken }),
         }).catch((error) => {
           console.error('[Logout] 백엔드 로그아웃 요청 실패:', error);
         });
