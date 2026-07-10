@@ -1,7 +1,8 @@
+import type { z } from 'zod';
 import type { ApiResponse } from '@/types/api';
 import { ApiRequestError } from '@/lib/errors';
 
-export async function parseResponse<T>(res: Response): Promise<T> {
+export async function parseResponse<T>(res: Response, schema?: z.ZodType<T>): Promise<T> {
   const json = await res.json();
 
   if (!res.ok) {
@@ -9,5 +10,11 @@ export async function parseResponse<T>(res: Response): Promise<T> {
     throw new ApiRequestError(res.status, message);
   }
 
-  return (json as ApiResponse<T>).data;
+  const data = (json as ApiResponse<T>).data;
+
+  if (schema) {
+    return schema.parse(data);
+  }
+
+  return data;
 }
