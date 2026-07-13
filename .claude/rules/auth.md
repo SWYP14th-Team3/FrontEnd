@@ -38,11 +38,11 @@ globs: ['src/**/*.ts', 'src/**/*.tsx']
 
 ## 인증 관련 파일 위치
 
-| 파일 | 위치 | 역할 |
-|------|------|------|
-| Proxy | `src/proxy.ts` | 토큰 검증 + 자동 갱신 |
-| JWT 유틸 | `src/lib/jwt.ts` | 디코딩, 만료 확인 |
-| 쿠키 헬퍼 | `src/lib/cookies.ts` | 쿠키 설정/삭제 |
-| fetch wrapper | `src/lib/fetchWithAuth.ts` | 서버 측 인증 fetch |
-| catch-all 프록시 | `src/app/api/[...path]/route.ts` | 클라이언트→백엔드 프록시 |
-| 인증 전용 Route | `src/app/api/auth/` 하위 | 로그인/로그아웃 (별도 생성) |
+| 파일             | 위치                             | 역할                        |
+| ---------------- | -------------------------------- | --------------------------- |
+| Proxy            | `src/proxy.ts`                   | 토큰 검증 + 자동 갱신       |
+| JWT 유틸         | `src/lib/jwt.ts`                 | 디코딩, 만료 확인           |
+| 쿠키 헬퍼        | `src/lib/cookies.ts`             | 쿠키 설정/삭제              |
+| fetch wrapper    | `src/lib/fetchWithAuth.ts`       | 서버 측 인증 fetch          |
+| catch-all 프록시 | `src/app/api/[...path]/route.ts` | 클라이언트→백엔드 프록시    |
+| 인증 전용 Route  | `src/app/api/auth/` 하위         | 로그인/로그아웃 (별도 생성) |
