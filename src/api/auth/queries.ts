@@ -1,29 +1,40 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, queryOptions } from '@tanstack/react-query';
 
-import { postSocialLogin, postLogout } from './api';
+import { postSocialLogin, postLogout, getMe } from './api';
 
+import type { ApiRequestError } from '@/lib/errors';
 import type { UseMutationOptions } from '@tanstack/react-query';
 import type { SocialLoginRequest, SocialLoginResponse, LogoutResponse } from './types';
 
 export const authKeys = {
   all: ['auth'] as const,
   oauth: () => [...authKeys.all, 'oauth'] as const,
+  me: () => [...authKeys.all, 'me'] as const,
 };
+
+/** GET /api/auth/me — 현재 사용자 정보 조회 */
+export function meOptions() {
+  return queryOptions({
+    queryKey: authKeys.me(),
+    queryFn: () => getMe(),
+    staleTime: 5 * 60 * 1000, // 5분 — 사용자 정보는 세션 중 거의 변하지 않음
+  });
+}
 
 /** POST /api/auth/session — OAuth 소셜 로그인 */
 export function useSocialLoginCallback(
-  options?: UseMutationOptions<SocialLoginResponse, Error, SocialLoginRequest, unknown>,
+  options?: UseMutationOptions<SocialLoginResponse, ApiRequestError, SocialLoginRequest>,
 ) {
   return useMutation({
-    mutationFn: postSocialLogin,
+    mutationFn: (body: SocialLoginRequest) => postSocialLogin(body),
     ...options,
   });
 }
 
 /** POST /api/auth/logout — 로그아웃 */
-export function useLogout(options?: UseMutationOptions<LogoutResponse, Error, void, unknown>) {
+export function useLogout(options?: UseMutationOptions<LogoutResponse, ApiRequestError, void>) {
   return useMutation({
-    mutationFn: postLogout,
+    mutationFn: () => postLogout(),
     ...options,
   });
 }
