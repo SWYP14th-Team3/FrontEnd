@@ -1,0 +1,365 @@
+import type { z } from 'zod';
+
+import type {
+  analysisListItemSchema,
+  analysisResultSchema,
+  evaluationSchema,
+  paginatedAnalysisListSchema,
+  reanalysisRequirementSchema,
+  requirementSchema,
+} from '@/api/analysis/schema';
+
+type MockEvaluation = z.infer<typeof evaluationSchema>;
+type MockRequirement = z.infer<typeof requirementSchema>;
+type MockReanalysisRequirement = z.infer<typeof reanalysisRequirementSchema>;
+type MockAnalysisResult = z.infer<typeof analysisResultSchema>;
+type MockAnalysisListItem = z.infer<typeof analysisListItemSchema>;
+type MockPaginatedAnalysisList = z.infer<typeof paginatedAnalysisListSchema>;
+
+export const mockEvaluation: MockEvaluation = {
+  evaluationId: 1,
+  matchStatus: 'CONFIRMED',
+  resumeEvidence: 'React, TypeScript를 활용한 3년간의 프론트엔드 개발 경험 보유',
+  feedback: 'JD의 React 요구사항을 충족합니다.',
+  revisionSuggestion: null,
+};
+
+export const mockRequirement: MockRequirement = {
+  requirementId: 1,
+  category: '자격요건',
+  title: 'React / TypeScript 개발 경험',
+  description: 'React와 TypeScript를 사용한 프론트엔드 개발 경험이 필요합니다.',
+  sourceText: '• React / TypeScript 기반 프론트엔드 개발 경험 3년 이상',
+  evaluation: mockEvaluation,
+};
+
+export const mockReanalysisRequirement: MockReanalysisRequirement = {
+  requirementId: 1,
+  category: '자격요건',
+  title: 'React / TypeScript 개발 경험',
+  evaluation: {
+    evaluationId: 1,
+    matchStatus: 'CONFIRMED',
+    resumeEvidence: 'React, TypeScript를 활용한 3년간의 프론트엔드 개발 경험 보유',
+    feedback: 'JD의 React 요구사항을 충족합니다.',
+    revisionSuggestion: null,
+  },
+};
+
+const mockRequirements: MockRequirement[] = [
+  {
+    requirementId: 1,
+    category: '자격요건',
+    title: 'React / TypeScript 개발 경험',
+    description: 'React와 TypeScript를 사용한 프론트엔드 개발 경험이 필요합니다.',
+    sourceText: '• React / TypeScript 기반 프론트엔드 개발 경험 3년 이상',
+    evaluation: {
+      evaluationId: 1,
+      matchStatus: 'CONFIRMED',
+      resumeEvidence: 'React, TypeScript를 활용한 3년간의 프론트엔드 개발 경험 보유',
+      feedback: 'JD의 React 요구사항을 충족합니다.',
+      revisionSuggestion: null,
+    },
+  },
+  {
+    requirementId: 2,
+    category: '자격요건',
+    title: '컴퓨터공학 관련 학위 또는 동등한 실무 경험',
+    description: '컴퓨터공학 전공 또는 이에 준하는 실무 경험을 요구합니다.',
+    sourceText: '• 컴퓨터공학 학사 이상 또는 동등한 실무 경험',
+    evaluation: {
+      evaluationId: 2,
+      matchStatus: 'NEEDS_IMPROVEMENT',
+      resumeEvidence: '정보통신공학 학사 졸업',
+      feedback: '관련 전공이지만 컴퓨터공학과 직접적으로 일치하지 않습니다.',
+      revisionSuggestion: '전공 과목이나 관련 프로젝트를 구체적으로 명시하면 좋습니다.',
+    },
+  },
+  {
+    requirementId: 3,
+    category: '업무역량',
+    title: '대규모 서비스 개발 및 운영 경험',
+    description: 'MAU 10만 이상의 서비스를 개발하고 운영한 경험이 필요합니다.',
+    sourceText: '• MAU 10만 이상 서비스 개발/운영 경험',
+    evaluation: {
+      evaluationId: 3,
+      matchStatus: 'CONFIRMED',
+      resumeEvidence: 'MAU 50만 이커머스 플랫폼 프론트엔드 개발 및 운영',
+      feedback: 'MAU 요구사항을 충분히 충족합니다.',
+      revisionSuggestion: null,
+    },
+  },
+  {
+    requirementId: 4,
+    category: '업무역량',
+    title: 'CI/CD 파이프라인 구축 경험',
+    description: 'GitHub Actions 또는 Jenkins를 활용한 CI/CD 경험이 필요합니다.',
+    sourceText: '• CI/CD 파이프라인 구축 및 운영 경험',
+    evaluation: {
+      evaluationId: 4,
+      matchStatus: 'MISSING',
+      resumeEvidence: null,
+      feedback: '이력서에서 CI/CD 관련 경험을 찾을 수 없습니다.',
+      revisionSuggestion: 'GitHub Actions나 Jenkins를 사용한 배포 자동화 경험이 있다면 추가하세요.',
+    },
+  },
+  {
+    requirementId: 5,
+    category: '도메인',
+    title: 'B2C 이커머스 도메인 경험',
+    description: 'B2C 이커머스 또는 유사 도메인에서의 개발 경험을 선호합니다.',
+    sourceText: '• B2C 이커머스 서비스 개발 경험 우대',
+    evaluation: {
+      evaluationId: 5,
+      matchStatus: 'CONFIRMED',
+      resumeEvidence: '이커머스 플랫폼 프론트엔드 개발 3년',
+      feedback: 'B2C 이커머스 도메인 경험이 잘 매칭됩니다.',
+      revisionSuggestion: null,
+    },
+  },
+  {
+    requirementId: 6,
+    category: '우대사항',
+    title: 'Next.js SSR/SSG 경험',
+    description: 'Next.js를 활용한 서버사이드 렌더링 또는 정적 생성 경험을 우대합니다.',
+    sourceText: '• Next.js SSR/SSG 활용 경험 우대',
+    evaluation: {
+      evaluationId: 6,
+      matchStatus: 'CONFIRMED',
+      resumeEvidence: 'Next.js App Router를 활용한 SSR 기반 이커머스 페이지 개발',
+      feedback: 'Next.js 우대사항을 잘 충족합니다.',
+      revisionSuggestion: null,
+    },
+  },
+  {
+    requirementId: 7,
+    category: '우대사항',
+    title: '오픈소스 기여 경험',
+    description: '오픈소스 프로젝트에 기여한 경험이 있으면 우대합니다.',
+    sourceText: '• 오픈소스 컨트리뷰션 경험 우대',
+    evaluation: {
+      evaluationId: 7,
+      matchStatus: 'MISSING',
+      resumeEvidence: null,
+      feedback: '이력서에서 오픈소스 기여 경험을 찾을 수 없습니다.',
+      revisionSuggestion: '사이드 프로젝트나 라이브러리 기여 경험이 있다면 추가하세요.',
+    },
+  },
+];
+
+export const mockAnalysisResult: MockAnalysisResult = {
+  analysisResultId: 1,
+  companyName: '테크스타트업 주식회사',
+  positionTitle: '프론트엔드 개발자',
+  overallLevel: 'HIGH',
+  redCount: 2,
+  yellowCount: 1,
+  greenCount: 4,
+  retryCount: 0,
+  remainingRetryCount: 5,
+  satisfaction: null,
+  jobInputType: 'TEXT',
+  jobUrl: null,
+  jobPostingRaw:
+    '프론트엔드 개발자를 모집합니다.\n\n자격요건:\n• React / TypeScript 기반 프론트엔드 개발 경험 3년 이상\n• 컴퓨터공학 학사 이상 또는 동등한 실무 경험\n\n업무역량:\n• MAU 10만 이상 서비스 개발/운영 경험\n• CI/CD 파이프라인 구축 및 운영 경험\n\n도메인:\n• B2C 이커머스 서비스 개발 경험 우대\n\n우대사항:\n• Next.js SSR/SSG 활용 경험 우대\n• 오픈소스 컨트리뷰션 경험 우대',
+  resumeOriginalText:
+    '홍길동\ntest@example.com\n\n경력\n- 이커머스 플랫폼 프론트엔드 개발 (2021.03 ~ 현재)\n  React, TypeScript, Next.js 활용\n  MAU 50만 서비스 운영\n\n학력\n- 정보통신공학 학사 (2017 ~ 2021)',
+  resumeCurrentText:
+    '홍길동\ntest@example.com\n\n경력\n- 이커머스 플랫폼 프론트엔드 개발 (2021.03 ~ 현재)\n  React, TypeScript, Next.js 활용\n  MAU 50만 서비스 운영\n\n학력\n- 정보통신공학 학사 (2017 ~ 2021)',
+  createdAt: '2025-07-10T09:00:00',
+  updatedAt: '2025-07-10T09:00:00',
+  lastSavedAt: null,
+  requirements: mockRequirements,
+};
+
+export const mockAnalysisResult2: MockAnalysisResult = {
+  analysisResultId: 2,
+  companyName: '글로벌 IT 기업',
+  positionTitle: '풀스택 개발자',
+  overallLevel: 'MEDIUM',
+  redCount: 4,
+  yellowCount: 2,
+  greenCount: 2,
+  retryCount: 1,
+  remainingRetryCount: 4,
+  satisfaction: 'LIKE',
+  jobInputType: 'URL',
+  jobUrl: 'https://example.com/jobs/123',
+  jobPostingRaw: '풀스택 개발자를 모집합니다. Node.js, React, AWS 경험자 우대.',
+  resumeOriginalText: '홍길동\n풀스택 개발 경험 2년\nReact, Node.js 사용 경험',
+  resumeCurrentText: '홍길동\n풀스택 개발 경험 2년\nReact, Node.js 사용 경험\nAWS EC2, S3 운영 경험 추가',
+  createdAt: '2025-07-11T10:00:00',
+  updatedAt: '2025-07-11T11:00:00',
+  lastSavedAt: '2025-07-11T11:00:00',
+  requirements: [
+    {
+      requirementId: 8,
+      category: '자격요건',
+      title: 'Node.js 백엔드 개발 경험',
+      description: 'Node.js를 사용한 백엔드 API 개발 경험이 필요합니다.',
+      sourceText: '• Node.js 백엔드 개발 경험 2년 이상',
+      evaluation: {
+        evaluationId: 8,
+        matchStatus: 'NEEDS_IMPROVEMENT',
+        resumeEvidence: 'Node.js 사용 경험',
+        feedback: '경험은 있으나 기간 및 구체적 내용이 부족합니다.',
+        revisionSuggestion: '담당했던 API 개발 경험을 구체적으로 작성하세요.',
+      },
+    },
+    {
+      requirementId: 9,
+      category: '업무역량',
+      title: 'AWS 클라우드 인프라 운영',
+      description: 'AWS 서비스를 활용한 클라우드 인프라 구축 및 운영 경험',
+      sourceText: '• AWS EC2, S3, RDS 운영 경험',
+      evaluation: {
+        evaluationId: 9,
+        matchStatus: 'MISSING',
+        resumeEvidence: null,
+        feedback: 'AWS 운영 경험을 이력서에서 찾을 수 없습니다.',
+        revisionSuggestion: 'AWS 서비스 활용 경험을 추가하세요.',
+      },
+    },
+  ],
+};
+
+export const mockReanalysisRequirements: MockReanalysisRequirement[] = [
+  {
+    requirementId: 1,
+    category: '자격요건',
+    title: 'React / TypeScript 개발 경험',
+    evaluation: {
+      evaluationId: 1,
+      matchStatus: 'CONFIRMED',
+      resumeEvidence: 'React, TypeScript를 활용한 3년간의 프론트엔드 개발 경험 보유',
+      feedback: 'JD의 React 요구사항을 충족합니다.',
+      revisionSuggestion: null,
+    },
+  },
+  {
+    requirementId: 2,
+    category: '자격요건',
+    title: '컴퓨터공학 관련 학위 또는 동등한 실무 경험',
+    evaluation: {
+      evaluationId: 2,
+      matchStatus: 'NEEDS_IMPROVEMENT',
+      resumeEvidence: '정보통신공학 학사 졸업',
+      feedback: '관련 전공이지만 컴퓨터공학과 직접적으로 일치하지 않습니다.',
+      revisionSuggestion: '전공 과목이나 관련 프로젝트를 구체적으로 명시하면 좋습니다.',
+    },
+  },
+  {
+    requirementId: 3,
+    category: '업무역량',
+    title: '대규모 서비스 개발 및 운영 경험',
+    evaluation: {
+      evaluationId: 3,
+      matchStatus: 'CONFIRMED',
+      resumeEvidence: 'MAU 50만 이커머스 플랫폼 프론트엔드 개발 및 운영',
+      feedback: 'MAU 요구사항을 충분히 충족합니다.',
+      revisionSuggestion: null,
+    },
+  },
+  {
+    requirementId: 4,
+    category: '업무역량',
+    title: 'CI/CD 파이프라인 구축 경험',
+    evaluation: {
+      evaluationId: 4,
+      matchStatus: 'MISSING',
+      resumeEvidence: null,
+      feedback: '이력서에서 CI/CD 관련 경험을 찾을 수 없습니다.',
+      revisionSuggestion: 'GitHub Actions나 Jenkins를 사용한 배포 자동화 경험이 있다면 추가하세요.',
+    },
+  },
+  {
+    requirementId: 5,
+    category: '도메인',
+    title: 'B2C 이커머스 도메인 경험',
+    evaluation: {
+      evaluationId: 5,
+      matchStatus: 'CONFIRMED',
+      resumeEvidence: '이커머스 플랫폼 프론트엔드 개발 3년',
+      feedback: 'B2C 이커머스 도메인 경험이 잘 매칭됩니다.',
+      revisionSuggestion: null,
+    },
+  },
+  {
+    requirementId: 6,
+    category: '우대사항',
+    title: 'Next.js SSR/SSG 경험',
+    evaluation: {
+      evaluationId: 6,
+      matchStatus: 'CONFIRMED',
+      resumeEvidence: 'Next.js App Router를 활용한 SSR 기반 이커머스 페이지 개발',
+      feedback: 'Next.js 우대사항을 잘 충족합니다.',
+      revisionSuggestion: null,
+    },
+  },
+  {
+    requirementId: 7,
+    category: '우대사항',
+    title: '오픈소스 기여 경험',
+    evaluation: {
+      evaluationId: 7,
+      matchStatus: 'MISSING',
+      resumeEvidence: null,
+      feedback: '이력서에서 오픈소스 기여 경험을 찾을 수 없습니다.',
+      revisionSuggestion: '사이드 프로젝트나 라이브러리 기여 경험이 있다면 추가하세요.',
+    },
+  },
+];
+
+export const mockAnalysisListItems: MockAnalysisListItem[] = [
+  {
+    analysisResultId: 1,
+    companyName: '테크스타트업 주식회사',
+    positionTitle: '프론트엔드 개발자',
+    overallLevel: 'HIGH',
+    redCount: 2,
+    yellowCount: 1,
+    greenCount: 4,
+    retryCount: 0,
+    remainingRetryCount: 5,
+    createdAt: '2025-07-10T09:00:00',
+    updatedAt: '2025-07-10T09:00:00',
+    lastSavedAt: null,
+  },
+  {
+    analysisResultId: 2,
+    companyName: '글로벌 IT 기업',
+    positionTitle: '풀스택 개발자',
+    overallLevel: 'MEDIUM',
+    redCount: 4,
+    yellowCount: 2,
+    greenCount: 2,
+    retryCount: 1,
+    remainingRetryCount: 4,
+    createdAt: '2025-07-11T10:00:00',
+    updatedAt: '2025-07-11T11:00:00',
+    lastSavedAt: '2025-07-11T11:00:00',
+  },
+  {
+    analysisResultId: 3,
+    companyName: null,
+    positionTitle: '백엔드 개발자',
+    overallLevel: 'LOW',
+    redCount: 5,
+    yellowCount: 2,
+    greenCount: 1,
+    retryCount: 2,
+    remainingRetryCount: 3,
+    createdAt: '2025-07-12T14:00:00',
+    updatedAt: '2025-07-12T14:30:00',
+    lastSavedAt: null,
+  },
+];
+
+export const mockPaginatedAnalysisList: MockPaginatedAnalysisList = {
+  content: mockAnalysisListItems,
+  page: 0,
+  size: 10,
+  totalElements: 3,
+  totalPages: 1,
+  last: true,
+};
