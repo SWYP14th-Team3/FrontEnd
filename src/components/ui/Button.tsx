@@ -2,6 +2,7 @@
 
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
+import { Slot } from '@/components/ui/Slot';
 
 const buttonVariants = cva('flex items-center justify-center rounded-xxxl font-weight-semibold', {
   variants: {
@@ -19,11 +20,24 @@ const buttonVariants = cva('flex items-center justify-center rounded-xxxl font-w
   defaultVariants: { variant: 'primary', size: 'lg' },
 });
 
-type ButtonProps = React.ComponentProps<'button'> & VariantProps<typeof buttonVariants>;
+type ButtonProps = React.ComponentProps<'button'> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean;
+  };
 
-function Button({ className, variant, size, children, ...props }: ButtonProps) {
+function Button({ className, variant, size, asChild = false, children, ...props }: ButtonProps) {
+  const classes = cn(buttonVariants({ variant, size }), className);
+
+  if (asChild) {
+    return (
+      <Slot className={classes} {...props}>
+        {children}
+      </Slot>
+    );
+  }
+
   return (
-    <button className={cn(buttonVariants({ variant, size }), className)} {...props}>
+    <button className={classes} {...props}>
       {children}
     </button>
   );
