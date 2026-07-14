@@ -18,15 +18,22 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    items: [
-      { value: 'url', label: '공고 URL', icon: <LinkIcon width={18} height={18} /> },
-      { value: 'text', label: '공고 텍스트', icon: <TextIcon width={18} height={18} /> },
-    ],
     value: 'url',
     onChange: () => {},
   },
-  render: function DefaultStory(args) {
-    const [value, setValue] = useState(args.value);
-    return <SegmentedControl {...args} value={value} onChange={setValue} />;
+  render: function DefaultStory() {
+    const [value, setValue] = useState('url');
+    return (
+      <SegmentedControl value={value} onChange={setValue}>
+        <SegmentedControl.Item value="url">
+          <LinkIcon width={18} height={18} className="align-middle" />
+          공고 URL
+        </SegmentedControl.Item>
+        <SegmentedControl.Item value="text">
+          <TextIcon width={18} height={18} className="align-middle" />
+          공고 텍스트
+        </SegmentedControl.Item>
+      </SegmentedControl>
+    );
   },
 };

@@ -1,57 +1,79 @@
 'use client';
 
+import { createContext, use } from 'react';
 import { cn } from '@/lib/utils';
 import { Slot } from '@/components/ui/Slot';
 
-type SegmentItem = Omit<React.ComponentProps<'button'>, 'value'> & {
-  value: string;
-  label: string;
-  icon?: React.ReactNode;
-  asChild?: boolean;
-};
-
-type SegmentedControlProps = {
-  items: SegmentItem[];
+type SegmentedControlContextValue = {
   value: string;
   onChange: (value: string) => void;
-  className?: string;
 };
 
-function SegmentedControl({ items, value, onChange, className }: SegmentedControlProps) {
+const SegmentedControlContext = createContext<SegmentedControlContextValue | null>(null);
+
+function useSegmentedControl() {
+  const context = use(SegmentedControlContext);
+  if (!context) {
+    throw new Error('SegmentedControl.Item must be used within SegmentedControl');
+  }
+  return context;
+}
+
+type SegmentedControlProps = Omit<React.ComponentProps<'div'>, 'onChange'> & {
+  value: string;
+  onChange: (value: string) => void;
+};
+
+function SegmentedControl({ value, onChange, className, children, ...props }: SegmentedControlProps) {
   return (
-    <div className={cn('bg-gray-10 inline-flex items-center rounded-lg p-1.5', className)}>
-      {items.map(
-        ({ value: itemValue, label, icon, className: itemClassName, onClick, asChild, children, ...itemProps }) => {
-          const isActive = itemValue === value;
-          const classes = cn(
-            'rounded-regular text-body-sm font-weight-semibold inline-flex h-[35px] w-[102px] cursor-pointer items-center justify-center gap-1 transition-colors',
-            isActive ? 'bg-primary-40 text-gray-0' : 'text-gray-70',
-            itemClassName,
-          );
-          const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-            onChange(itemValue);
-            onClick?.(e);
-          };
-
-          if (asChild && children) {
-            return (
-              <Slot key={itemValue} className={classes} onClick={handleClick} {...itemProps}>
-                {children}
-              </Slot>
-            );
-          }
-
-          return (
-            <button key={itemValue} type="button" onClick={handleClick} className={classes} {...itemProps}>
-              {icon && <span className="-mt-[1.2px] shrink-0">{icon}</span>}
-              {label}
-            </button>
-          );
-        },
-      )}
-    </div>
+    <SegmentedControlContext value={{ value, onChange }}>
+      <div className={cn('bg-gray-10 inline-flex items-center rounded-lg p-1.5', className)} {...props}>
+        {children}
+      </div>
+    </SegmentedControlContext>
   );
 }
 
-export { SegmentedControl };
-export type { SegmentItem, SegmentedControlProps };
+type SegmentedControlItemProps = React.ComponentProps<'button'> & {
+  value: string;
+  asChild?: boolean;
+};
+
+function SegmentedControlItem({
+  value: itemValue,
+  asChild = false,
+  className,
+  onClick,
+  children,
+  ...props
+}: SegmentedControlItemProps) {
+  const { value, onChange } = useSegmentedControl();
+  const isActive = itemValue === value;
+  const classes = cn(
+    'rounded-regular text-body-sm font-weight-semibold inline-flex h-[35px] w-[102px] cursor-pointer items-center justify-center gap-1 transition-colors',
+    isActive ? 'bg-primary-40 text-gray-0' : 'text-gray-70',
+    className,
+  );
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    onChange(itemValue);
+    onClick?.(e);
+  };
+
+  if (asChild) {
+    return (
+      <Slot className={classes} onClick={handleClick} {...props}>
+        {children}
+      </Slot>
+    );
+  }
+
+  return (
+    <button type="button" onClick={handleClick} className={classes} {...props}>
+      {children}
+    </button>
+  );
+}
+
+SegmentedControl.Item = SegmentedControlItem;
+
+export { SegmentedControl, SegmentedControlItem };
