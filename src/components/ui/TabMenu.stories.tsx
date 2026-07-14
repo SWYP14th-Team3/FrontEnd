@@ -16,15 +16,16 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    items: [
-      { value: 'analyze', label: '분석하기' },
-      { value: 'history', label: '분석 기록' },
-    ],
     value: 'analyze',
     onChange: () => {},
   },
-  render: function DefaultStory(args) {
-    const [value, setValue] = useState(args.value);
-    return <TabMenu {...args} value={value} onChange={setValue} />;
+  render: function DefaultStory() {
+    const [value, setValue] = useState('analyze');
+    return (
+      <TabMenu value={value} onChange={setValue}>
+        <TabMenu.Item value="analyze">분석하기</TabMenu.Item>
+        <TabMenu.Item value="history">분석 기록</TabMenu.Item>
+      </TabMenu>
+    );
   },
 };
