@@ -16,15 +16,16 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    items: [
-      { value: 'summary', label: '요약 공고' },
-      { value: 'original', label: '원본 공고' },
-    ],
     value: 'summary',
     onChange: () => {},
   },
-  render: function DefaultStory(args) {
-    const [value, setValue] = useState(args.value);
-    return <ToggleGroup {...args} value={value} onChange={setValue} />;
+  render: function DefaultStory() {
+    const [value, setValue] = useState('summary');
+    return (
+      <ToggleGroup value={value} onChange={setValue}>
+        <ToggleGroup.Item value="summary">요약 공고</ToggleGroup.Item>
+        <ToggleGroup.Item value="original">원본 공고</ToggleGroup.Item>
+      </ToggleGroup>
+    );
   },
 };
