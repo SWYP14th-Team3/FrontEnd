@@ -42,6 +42,7 @@ export const Full: Story = {
 };
 
 export const AllStages: Story = {
+  args: { value: 50 },
   render: () => (
     <div className="flex w-[539px] flex-col gap-4">
       <ProgressBar value={0} />

@@ -67,6 +67,12 @@ export const RetryFailed: Story = {
 };
 
 export const Interactive: Story = {
+  args: {
+    open: false,
+    onClose: () => {},
+    title: '',
+    actions: [],
+  },
   render: function InteractiveDialog() {
     const [open, setOpen] = useState(false);
     return (

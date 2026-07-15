@@ -30,6 +30,7 @@ export const Missing: Story = {
 };
 
 export const AllVariants: Story = {
+  args: { variant: 'confirmed', children: '확인됨' },
   render: () => (
     <div className="flex gap-2">
       <Badge variant="confirmed">확인됨</Badge>
