@@ -50,6 +50,7 @@ function Accordion({
     <div className={cn(accordionVariants({ variant }), className)} {...props}>
       <button
         type="button"
+        aria-expanded={isOpen}
         onClick={() => setIsOpen((prev) => !prev)}
         className="flex w-full cursor-pointer items-center gap-[15px] px-[7px]"
       >
