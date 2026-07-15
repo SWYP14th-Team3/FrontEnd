@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useId } from 'react';
 import { cn } from '@/lib/utils';
 
 type DialogAction = {
@@ -20,6 +20,9 @@ type DialogProps = React.ComponentProps<'div'> & {
 };
 
 function Dialog({ className, open, onClose, icon, title, description, actions, ...props }: DialogProps) {
+  const titleId = useId();
+  const descId = useId();
+
   useEffect(() => {
     if (!open) return;
 
@@ -44,6 +47,8 @@ function Dialog({ className, open, onClose, icon, title, description, actions, .
       <div
         role="dialog"
         aria-modal="true"
+        aria-labelledby={titleId}
+        aria-describedby={description ? descId : undefined}
         className={cn(
           'rounded-xxxl bg-gray-0 relative z-10 flex flex-col items-center gap-10 px-[30px] pb-[30px] shadow-[0px_4px_20px_rgba(0,0,0,0.05)]',
           icon ? 'pt-10' : 'pt-[50px]',
@@ -53,9 +58,9 @@ function Dialog({ className, open, onClose, icon, title, description, actions, .
         <div className="flex w-[319px] flex-col items-center gap-[19px]">
           {icon && <div className="size-[46px]">{icon}</div>}
           <div className="flex w-full flex-col items-center gap-2 text-center">
-            <h2 className="text-heading-md font-weight-semibold text-gray-90 whitespace-nowrap">{title}</h2>
+            <h2 id={titleId} className="text-heading-md font-weight-semibold text-gray-90 whitespace-nowrap">{title}</h2>
             {description && (
-              <p className="text-heading-xs font-weight-semibold text-gray-40 w-[247px]">{description}</p>
+              <p id={descId} className="text-heading-xs font-weight-semibold text-gray-40 w-[247px]">{description}</p>
             )}
           </div>
         </div>
