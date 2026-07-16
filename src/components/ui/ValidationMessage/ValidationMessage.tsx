@@ -4,7 +4,6 @@ import { WarningIcon } from '@/components/icon/WarningIcon';
 type ValidationMessageProps = {
   className?: string;
   children: React.ReactNode;
-  variant?: 'error';
 };
 
 function ValidationMessage({ className, children }: ValidationMessageProps) {
