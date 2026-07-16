@@ -10,7 +10,7 @@ type ValidationMessageProps = {
 function ValidationMessage({ className, children }: ValidationMessageProps) {
   return (
     <div className={cn('flex items-center gap-[3px]', className)}>
-      <WarningIcon className="size-[14px] shrink-0 text-danger-40" />
+      <WarningIcon className="text-danger-40 size-[14px] shrink-0" />
       <p className="text-body-xs font-weight-semibold text-danger-40">{children}</p>
     </div>
   );

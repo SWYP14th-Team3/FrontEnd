@@ -13,11 +13,11 @@ function ProgressBar({ className, value, ...props }: ProgressBarProps) {
       aria-valuenow={clampedValue}
       aria-valuemin={0}
       aria-valuemax={100}
-      className={cn('h-3 w-full overflow-hidden rounded-[31px] bg-gray-5', className)}
+      className={cn('bg-gray-5 h-3 w-full overflow-hidden rounded-[31px]', className)}
       {...props}
     >
       <div
-        className="h-3 rounded-[31px] bg-primary-40 transition-all duration-500 ease-out"
+        className="bg-primary-40 h-3 rounded-[31px] transition-all duration-500 ease-out"
         style={{ width: `${clampedValue}%` }}
       />
     </div>

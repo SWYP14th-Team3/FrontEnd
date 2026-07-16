@@ -12,18 +12,21 @@ const countBadgeVariants = cva('inline-flex items-center rounded-[32px] p-2', {
   defaultVariants: { variant: 'confirmed' },
 });
 
-const countCircleVariants = cva('flex size-[21px] items-center justify-center rounded-full text-[15px] font-weight-medium text-gray-0', {
-  variants: {
-    variant: {
-      confirmed: 'bg-success-50',
-      needsImprovement: 'bg-warning-50',
-      missing: 'bg-danger-40',
+const countCircleVariants = cva(
+  'flex size-[21px] justify-center rounded-full text-[15px] font-weight-medium text-gray-0',
+  {
+    variants: {
+      variant: {
+        confirmed: 'bg-success-50',
+        needsImprovement: 'bg-warning-50',
+        missing: 'bg-danger-40',
+      },
     },
+    defaultVariants: { variant: 'confirmed' },
   },
-  defaultVariants: { variant: 'confirmed' },
-});
+);
 
-const countTextVariants = cva('text-body-lg font-weight-semibold', {
+const countTextVariants = cva('text-body-lg leading-none font-weight-semibold', {
   variants: {
     variant: {
       confirmed: 'text-success-50',

@@ -1,0 +1,31 @@
+type CheckboxIconProps = React.ComponentProps<'svg'>;
+
+function CheckboxIcon({ className, ...props }: CheckboxIconProps) {
+  return (
+    <svg
+      width={props.width ?? 23}
+      height={props.height ?? 23}
+      viewBox="0 0 23 23"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      {...props}
+    >
+      <clipPath id="checkbox-clip">
+        <rect width="23" height="23" fill="white" />
+      </clipPath>
+      <g clipPath="url(#checkbox-clip)">
+        <path
+          d="M16.3875 2.0127H6.61251C4.072 2.0127 2.01251 4.07219 2.01251 6.6127V16.3877C2.01251 18.9282 4.072 20.9877 6.61251 20.9877H16.3875C18.928 20.9877 20.9875 18.9282 20.9875 16.3877V6.6127C20.9875 4.07219 18.928 2.0127 16.3875 2.0127Z"
+          fill="#E5E8EB"
+        />
+        <path
+          d="M10.4092 15.6463C10.1441 15.6463 9.87962 15.5456 9.67722 15.3432L6.23988 11.9059C5.83565 11.5017 5.83565 10.8462 6.23988 10.4419C6.6441 10.0383 7.2996 10.0383 7.70382 10.4419L10.4092 13.1479L15.2961 8.26096C15.7009 7.85731 16.3559 7.85674 16.7601 8.26096C17.1643 8.66519 17.1643 9.32069 16.7601 9.72491L11.1412 15.3432C10.9388 15.5451 10.6743 15.6463 10.4092 15.6463Z"
+          fill="#313D4C"
+        />
+      </g>
+    </svg>
+  );
+}
+
+export { CheckboxIcon };

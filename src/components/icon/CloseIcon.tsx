@@ -11,11 +11,7 @@ function CloseIcon({ className, ...props }: CloseIconProps) {
       className={className}
       {...props}
     >
-      <path
-        d="M0.5 8.5L8.5 0.5M0.5 0.5L8.5 8.5"
-        stroke="currentColor"
-        strokeLinecap="round"
-      />
+      <path d="M0.5 8.5L8.5 0.5M0.5 0.5L8.5 8.5" stroke="currentColor" strokeLinecap="round" />
     </svg>
   );
 }

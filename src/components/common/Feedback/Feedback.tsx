@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { ThumbUpIcon } from '@/components/icon/ThumbUpIcon';
 import { ThumbDownIcon } from '@/components/icon/ThumbDownIcon';
+import { CheckboxIcon } from '@/components/icon/CheckboxIcon';
 
 type FeedbackProps = React.ComponentProps<'div'> & {
   onFeedback?: (type: 'up' | 'down') => void;
@@ -48,7 +49,7 @@ function Feedback({ className, onFeedback, ...props }: FeedbackProps) {
       ) : (
         <>
           <div className="flex items-center gap-[3px]">
-            <span className="text-[23px]">☑️</span>
+            <CheckboxIcon className="size-[23px] shrink-0" />
             <span className="font-weight-medium text-gray-40 text-[18px] whitespace-nowrap">의견이 반영되었어요!</span>
           </div>
           <button
