@@ -56,7 +56,7 @@ function Textarea({
         <textarea
           id={id}
           className={cn(
-            'flex-1 bg-transparent text-heading-xs font-weight-medium text-gray-90 placeholder:text-gray-30 outline-none resize-none scrollbar-none',
+            'text-heading-xs font-weight-medium text-gray-90 placeholder:text-gray-30 flex-1 resize-none scrollbar-none bg-transparent outline-none',
             resolvedState === 'disabled' && 'text-gray-30 cursor-not-allowed',
           )}
           disabled={disabled || state === 'disabled'}
@@ -67,7 +67,7 @@ function Textarea({
           {...props}
         />
         {maxLength && (
-          <span className="self-end shrink-0 text-body-xs font-weight-medium text-gray-30">
+          <span className="text-body-xs font-weight-medium text-gray-30 shrink-0 self-end">
             {displayCount}자/{maxLength}자
           </span>
         )}
