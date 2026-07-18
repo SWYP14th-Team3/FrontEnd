@@ -183,3 +183,17 @@
 @utility font-weight-bold {
   font-weight: 600;
 }
+
+/* Layout Utilities */
+@utility layout-container {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  @media (width >= 768px) {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+  @media (width >= 1280px) {
+    padding-left: 82px;
+    padding-right: 82px;
+  }
+}
