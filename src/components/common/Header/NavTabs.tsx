@@ -9,7 +9,7 @@ function NavTabs() {
   const activeTab = pathname.startsWith('/history') ? 'history' : 'analyze';
 
   return (
-    <TabMenu value={activeTab} onChange={() => {}}>
+    <TabMenu value={activeTab}>
       <TabMenu.Item value="analyze" asChild>
         <Link href="/">분석하기</Link>
       </TabMenu.Item>
