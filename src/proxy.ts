@@ -8,6 +8,10 @@ const PROTECTED_ROUTES = ['/result', '/history'];
 const REFRESH_ENDPOINT = `${process.env.BACKEND_URL}/api/auth/reissue`;
 
 export async function proxy(request: NextRequest) {
+  if (process.env.NEXT_PUBLIC_MSW_ENABLED === 'true') {
+    return NextResponse.next();
+  }
+
   const accessToken = request.cookies.get(ACCESS_TOKEN_KEY)?.value;
   const refreshToken = request.cookies.get(REFRESH_TOKEN_KEY)?.value;
 
