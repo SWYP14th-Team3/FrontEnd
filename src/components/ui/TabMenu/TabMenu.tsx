@@ -6,7 +6,7 @@ import { Slot } from '@/components/ui/Slot';
 
 type TabMenuContextValue = {
   value: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
 };
 
 const TabMenuContext = createContext<TabMenuContextValue | null>(null);
@@ -21,7 +21,7 @@ function useTabMenu() {
 
 type TabMenuProps = Omit<React.ComponentProps<'div'>, 'onChange'> & {
   value: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
 };
 
 function TabMenu({ value, onChange, className, children, ...props }: TabMenuProps) {
@@ -48,7 +48,7 @@ function TabMenuItem({ value: itemValue, asChild = false, className, onClick, ch
     className,
   );
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    onChange(itemValue);
+    onChange?.(itemValue);
     onClick?.(e);
   };
 
