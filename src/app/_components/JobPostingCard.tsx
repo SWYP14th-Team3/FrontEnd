@@ -25,6 +25,7 @@ type JobPostingCardProps = {
   contentMode: 'text' | 'image';
   onContentModeChange: (mode: 'text' | 'image') => void;
   jobImages: File[];
+  jobImagePreviews: string[];
   onJobImagesAdd: (files: File[]) => void;
   onJobImageRemove: (index: number) => void;
 };
@@ -37,6 +38,7 @@ function JobPostingCard({
   contentMode,
   onContentModeChange,
   jobImages,
+  jobImagePreviews,
   onJobImagesAdd,
   onJobImageRemove,
 }: JobPostingCardProps) {
@@ -96,7 +98,7 @@ function JobPostingCard({
           )}
 
           {contentMode === 'image' && (
-            <ImageUploadArea images={jobImages} onImagesAdd={onJobImagesAdd} onImageRemove={onJobImageRemove} />
+            <ImageUploadArea images={jobImages} previews={jobImagePreviews} onImagesAdd={onJobImagesAdd} onImageRemove={onJobImageRemove} />
           )}
         </div>
       </div>

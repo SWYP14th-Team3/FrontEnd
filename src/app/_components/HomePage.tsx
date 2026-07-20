@@ -25,6 +25,21 @@ function HomePage() {
   const [jobText, setJobText] = useState('');
   const [contentMode, setContentMode] = useState<'text' | 'image'>('text');
   const [jobImages, setJobImages] = useState<File[]>([]);
+  const [jobImagePreviews, setJobImagePreviews] = useState<string[]>([]);
+
+  const handleImagesAdd = (files: File[]) => {
+    const newUrls = files.map((f) => URL.createObjectURL(f));
+    setJobImages((prev) => [...prev, ...files]);
+    setJobImagePreviews((prev) => [...prev, ...newUrls]);
+  };
+
+  const handleImageRemove = (index: number) => {
+    setJobImagePreviews((prev) => {
+      URL.revokeObjectURL(prev[index]);
+      return prev.filter((_, i) => i !== index);
+    });
+    setJobImages((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const jobTextLength = jobText.trim().length;
   const isJobTextValid = jobTextLength >= 100 && jobTextLength <= 6000;
@@ -87,6 +102,7 @@ function HomePage() {
       pendingSubmitRef.current = false;
       submitAnalysis();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn]);
 
   const handleSubmit = () => {
@@ -120,8 +136,9 @@ function HomePage() {
           contentMode={contentMode}
           onContentModeChange={setContentMode}
           jobImages={jobImages}
-          onJobImagesAdd={(files) => setJobImages((prev) => [...prev, ...files])}
-          onJobImageRemove={(index) => setJobImages((prev) => prev.filter((_, i) => i !== index))}
+          jobImagePreviews={jobImagePreviews}
+          onJobImagesAdd={handleImagesAdd}
+          onJobImageRemove={handleImageRemove}
         />
       </div>
 

@@ -10,11 +10,12 @@ const ACCEPT_TYPES = '.jpg,.jpeg,.png';
 
 type ImageUploadAreaProps = {
   images: File[];
+  previews: string[];
   onImagesAdd: (files: File[]) => void;
   onImageRemove: (index: number) => void;
 };
 
-function ImageUploadArea({ images, onImagesAdd, onImageRemove }: ImageUploadAreaProps) {
+function ImageUploadArea({ images, previews, onImagesAdd, onImageRemove }: ImageUploadAreaProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleClick = () => {
@@ -96,7 +97,7 @@ function ImageUploadArea({ images, onImagesAdd, onImageRemove }: ImageUploadArea
             key={`${file.name}-${index}`}
             className="rounded-regular border-gray-10 relative size-[72px] shrink-0 overflow-hidden border"
           >
-            <img src={URL.createObjectURL(file)} alt={file.name} className="size-full object-cover" />
+            <img src={previews[index]} alt={file.name} className="size-full object-cover" />
             <button
               type="button"
               onClick={() => onImageRemove(index)}
