@@ -4,14 +4,14 @@ import { useQuery } from '@tanstack/react-query';
 import { meOptions } from '@/api/auth/queries';
 
 export function useUser() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, status } = useQuery({
     ...meOptions(),
     retry: false,
   });
 
   return {
     user: data ?? null,
-    isLoggedIn: !!data,
+    isLoggedIn: status === 'success' && !!data,
     isLoading,
   };
 }
