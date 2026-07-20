@@ -25,6 +25,7 @@ function formatFileSize(bytes: number): string {
 function FileUploadArea({
   className,
   accept = '.pdf',
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   maxSize = 10 * 1024 * 1024,
   onFileSelect,
   onFileRemove,
@@ -38,9 +39,6 @@ function FileUploadArea({
   }
 
   function handleFileSelect(selectedFile: File) {
-    if (selectedFile.size > maxSize) {
-      return;
-    }
     onFileSelect?.(selectedFile);
   }
 
@@ -75,7 +73,7 @@ function FileUploadArea({
     return (
       <div
         className={cn(
-          'border-gray-20 bg-gray-0 flex h-[186px] w-[430px] items-center justify-center rounded-lg border p-4',
+          'border-gray-20 bg-gray-0 flex h-[186px] items-center justify-center rounded-lg border p-4',
           className,
         )}
       >
