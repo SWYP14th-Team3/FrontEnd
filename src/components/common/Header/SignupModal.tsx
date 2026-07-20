@@ -7,6 +7,7 @@ import { authKeys } from '@/api/auth/queries';
 import { CheckIcon } from '@/components/icon/CheckIcon';
 import { ChevronRightIcon } from '@/components/icon/ChevronRightIcon';
 import Link from 'next/link';
+import { TERMS_OF_SERVICE_URL, PRIVACY_POLICY_URL } from '@/constants/links';
 
 type SignupModalProps = {
   isOpen: boolean;
@@ -107,7 +108,7 @@ function SignupModal({ isOpen, close, unmount }: SignupModalProps) {
                     이용약관에 동의합니다.
                   </span>
                 </button>
-                <Link href="https://gray-erica-023.notion.site/39b814c1b5b280b08663fac71fada009" target="_blank">
+                <Link href={TERMS_OF_SERVICE_URL} target="_blank">
                   <ChevronRightIcon className="text-gray-30" aria-hidden="true" />
                 </Link>
               </div>
@@ -139,7 +140,7 @@ function SignupModal({ isOpen, close, unmount }: SignupModalProps) {
                     개인정보 처리방침에 동의합니다.
                   </span>
                 </button>
-                <Link href="https://gray-erica-023.notion.site/39b814c1b5b2807097fbff72d3096c2a" target="_blank">
+                <Link href={PRIVACY_POLICY_URL} target="_blank">
                   <ChevronRightIcon className="text-gray-30" aria-hidden="true" />
                 </Link>
               </div>
@@ -164,7 +165,7 @@ function SignupModal({ isOpen, close, unmount }: SignupModalProps) {
             <div className="h-[20px]" />
             <p className="text-body-xs font-weight-medium tracking-[-0.39px] text-gray-30">
               <Link
-                href="https://gray-erica-023.notion.site/39b814c1b5b280b08663fac71fada009"
+                href={TERMS_OF_SERVICE_URL}
                 target="_blank"
                 className="hover:underline"
               >
@@ -172,7 +173,7 @@ function SignupModal({ isOpen, close, unmount }: SignupModalProps) {
               </Link>
               {' | '}
               <Link
-                href="https://gray-erica-023.notion.site/39b814c1b5b2807097fbff72d3096c2a"
+                href={PRIVACY_POLICY_URL}
                 target="_blank"
                 className="hover:underline"
               >

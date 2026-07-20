@@ -5,6 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { overlay } from 'overlay-kit';
 import { authKeys, useSocialLoginCallback } from '@/api/auth/queries';
 import Link from 'next/link';
+import { TERMS_OF_SERVICE_URL, PRIVACY_POLICY_URL } from '@/constants/links';
 import { SocialLoginButton } from './SocialLoginButton';
 import { SignupModal } from './SignupModal';
 
@@ -165,7 +166,7 @@ function LoginModal({ isOpen, close, unmount }: LoginModalProps) {
           {/* 이용약관 링크 */}
           <p className="text-body-xs font-weight-medium tracking-[-0.39px] text-gray-30">
             <Link
-              href="https://gray-erica-023.notion.site/39b814c1b5b280b08663fac71fada009"
+              href={TERMS_OF_SERVICE_URL}
               target="_blank"
               className="hover:underline"
             >
@@ -173,7 +174,7 @@ function LoginModal({ isOpen, close, unmount }: LoginModalProps) {
             </Link>
             {' | '}
             <Link
-              href="https://gray-erica-023.notion.site/39b814c1b5b2807097fbff72d3096c2a"
+              href={PRIVACY_POLICY_URL}
               target="_blank"
               className="hover:underline"
             >
