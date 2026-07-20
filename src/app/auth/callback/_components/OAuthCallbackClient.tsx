@@ -15,7 +15,18 @@ export function OAuthCallbackClient() {
 
   const { mutate: loginCallback, isError } = useSocialLoginCallback({
     onSuccess: () => {
-      router.replace('/');
+      if (window.opener) {
+        window.opener.postMessage({ type: 'OAUTH_SUCCESS' }, window.location.origin);
+        window.close();
+      } else {
+        router.replace('/');
+      }
+    },
+    onError: () => {
+      if (window.opener) {
+        window.opener.postMessage({ type: 'OAUTH_ERROR', error: 'LOGIN_FAILED' }, window.location.origin);
+        window.close();
+      }
     },
   });
 
