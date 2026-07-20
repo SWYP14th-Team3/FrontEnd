@@ -9,7 +9,6 @@ import { CloseIcon } from '@/components/icon/CloseIcon';
 type FileUploadAreaProps = {
   className?: string;
   accept?: string;
-  maxSize?: number;
   onFileSelect?: (file: File) => void;
   onFileRemove?: () => void;
   file?: File | null;
@@ -25,7 +24,6 @@ function formatFileSize(bytes: number): string {
 function FileUploadArea({
   className,
   accept = '.pdf',
-  maxSize = 10 * 1024 * 1024,
   onFileSelect,
   onFileRemove,
   file,
@@ -38,9 +36,6 @@ function FileUploadArea({
   }
 
   function handleFileSelect(selectedFile: File) {
-    if (selectedFile.size > maxSize) {
-      return;
-    }
     onFileSelect?.(selectedFile);
   }
 
@@ -75,7 +70,7 @@ function FileUploadArea({
     return (
       <div
         className={cn(
-          'border-gray-20 bg-gray-0 flex h-[186px] w-[430px] items-center justify-center rounded-lg border p-4',
+          'border-gray-20 bg-gray-0 flex h-[186px] items-center justify-center rounded-lg border p-4',
           className,
         )}
       >
