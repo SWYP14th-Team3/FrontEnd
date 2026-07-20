@@ -27,6 +27,13 @@ function HomePage() {
   const [jobImages, setJobImages] = useState<File[]>([]);
   const [jobImagePreviews, setJobImagePreviews] = useState<string[]>([]);
 
+  // unmount 시 남은 preview URL 전부 해제
+  useEffect(() => {
+    return () => {
+      jobImagePreviews.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [jobImagePreviews]);
+
   const handleImagesAdd = (files: File[]) => {
     const newUrls = files.map((f) => URL.createObjectURL(f));
     setJobImages((prev) => [...prev, ...files]);

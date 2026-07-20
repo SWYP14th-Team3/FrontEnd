@@ -9,7 +9,6 @@ import { CloseIcon } from '@/components/icon/CloseIcon';
 type FileUploadAreaProps = {
   className?: string;
   accept?: string;
-  maxSize?: number;
   onFileSelect?: (file: File) => void;
   onFileRemove?: () => void;
   file?: File | null;
@@ -25,8 +24,6 @@ function formatFileSize(bytes: number): string {
 function FileUploadArea({
   className,
   accept = '.pdf',
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  maxSize = 10 * 1024 * 1024,
   onFileSelect,
   onFileRemove,
   file,
