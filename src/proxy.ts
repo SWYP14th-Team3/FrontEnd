@@ -42,13 +42,14 @@ async function attemptRefresh(request: NextRequest, refreshToken: string) {
   try {
     const res = await fetch(REFRESH_ENDPOINT, {
       method: 'POST',
-      headers: { Cookie: `refreshToken=${refreshToken}` },
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refreshToken }),
     });
 
     if (res.ok) {
-      const data = await res.json();
-      const newAccessToken = data.accessToken;
-      const newRefreshToken = data.refreshToken;
+      const json = await res.json();
+      const newAccessToken = json.data?.accessToken;
+      const newRefreshToken = json.data?.refreshToken;
 
       if (typeof newAccessToken !== 'string') {
         return redirectWithClear(request);
