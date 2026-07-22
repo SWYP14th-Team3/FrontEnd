@@ -11,13 +11,19 @@ async function handleRequest(request: Request, { params }: RouteContext) {
   const { searchParams } = new URL(request.url);
   const url = searchParams.toString() ? `${backendPath}?${searchParams}` : backendPath;
 
-  const requestBody = request.method !== 'GET' && request.method !== 'HEAD' ? await request.text() : undefined;
+  const hasBody = request.method !== 'GET' && request.method !== 'HEAD';
+  const reqContentType = request.headers.get('Content-Type');
+  const requestBody = hasBody
+    ? reqContentType?.includes('multipart/form-data')
+      ? await request.arrayBuffer()
+      : await request.text()
+    : undefined;
 
   try {
     const res = await fetchWithAuth(url, {
       method: request.method,
-      ...(requestBody && {
-        headers: { 'Content-Type': request.headers.get('Content-Type') ?? 'application/json' },
+      ...(requestBody !== undefined && {
+        headers: { 'Content-Type': reqContentType ?? 'application/json' },
         body: requestBody,
       }),
     });
