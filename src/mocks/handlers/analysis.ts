@@ -2,17 +2,16 @@ import { http, HttpResponse } from 'msw';
 
 import { mockAnalysisResult, mockPaginatedAnalysisList, mockReanalysisRequirements } from '@/mocks/data/analysis';
 
-const mockReanalyzeResponse = {
-  analysisResultId: 1,
+// 재분석 시 변경되는 상태
+let reanalyzed = false;
+
+const reanalyzedOverrides = {
   overallLevel: 'HIGH' as const,
   redCount: 1,
-  yellowCount: 2,
-  greenCount: 4,
+  yellowCount: 1,
+  greenCount: 5,
   retryCount: 1,
   remainingRetryCount: 4,
-  resumeCurrentText: '재분석된 이력서 텍스트',
-  updatedAt: '2025-07-10T10:00:00',
-  requirements: mockReanalysisRequirements,
 };
 
 export const analysisHandlers = [
@@ -25,10 +24,11 @@ export const analysisHandlers = [
   }),
 
   http.get('/api/analyses/:id', () => {
+    const data = reanalyzed ? { ...mockAnalysisResult, ...reanalyzedOverrides } : mockAnalysisResult;
     return HttpResponse.json({
       status: 200,
       message: '분석 결과 조회 성공',
-      data: mockAnalysisResult,
+      data,
     });
   }),
 
@@ -40,23 +40,31 @@ export const analysisHandlers = [
     });
   }),
 
-  http.patch('/api/analyses/:id/resume', () => {
+  http.patch('/api/analyses/:id/resume', async ({ request }) => {
+    const body = (await request.json()) as { resumeCurrentText: string };
     return HttpResponse.json({
       status: 200,
       message: '이력서 자동 저장 성공',
       data: {
         analysisResultId: 1,
-        resumeCurrentText: '수정된 이력서 텍스트',
-        updatedAt: '2025-07-10T10:00:00',
+        resumeCurrentText: body.resumeCurrentText,
+        updatedAt: new Date().toISOString(),
       },
     });
   }),
 
   http.post('/api/analyses/:id/reanalyze', () => {
+    reanalyzed = true;
     return HttpResponse.json({
       status: 200,
       message: '재분석 완료',
-      data: mockReanalyzeResponse,
+      data: {
+        analysisResultId: 1,
+        ...reanalyzedOverrides,
+        resumeCurrentText: mockAnalysisResult.resumeCurrentText,
+        updatedAt: '2025-07-10T10:00:00',
+        requirements: mockReanalysisRequirements,
+      },
     });
   }),
 
