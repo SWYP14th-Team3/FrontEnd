@@ -1,5 +1,6 @@
 'use client';
 
+import { cn } from '@/lib/utils';
 import { Textarea } from '@/components/ui/Textarea/Textarea';
 import { CopyIcon } from '@/components/icon/CopyIcon';
 import { CheckIcon } from '@/components/icon/CheckIcon';
@@ -38,17 +39,18 @@ function ResumePanel({ resumeText, lastSavedAt, isAutoSaving, onChange }: Resume
         <div className="flex items-center gap-[10px]">
           <span className="text-heading-xs font-weight-semibold text-gray-90 md:text-heading-md">내 이력서</span>
           {isAutoSaving ? (
-            <span className="text-[14px] font-weight-medium text-gray-30">저장 중...</span>
+            <span className="text-body-sm font-weight-medium text-gray-30">저장 중...</span>
           ) : formattedTime != null ? (
-            <span className="text-[14px] font-weight-medium text-[#b9b9b9]">자동 저장 완료 {formattedTime}</span>
+            <span className="text-body-sm font-weight-medium text-gray-40">자동 저장 완료 {formattedTime}</span>
           ) : null}
         </div>
         <button
           type="button"
           onClick={handleCopy}
-          className={`rounded-regular flex cursor-pointer items-center gap-1.5 border px-3 py-2 transition-colors duration-200 ${
-            copied ? 'border-success-30 bg-success-5' : 'border-gray-10 bg-white'
-          }`}
+          className={cn(
+            'flex cursor-pointer items-center gap-1.5 rounded-regular border px-3 py-2 transition-colors duration-200',
+            copied ? 'border-success-30 bg-success-5' : 'border-gray-10 bg-white',
+          )}
         >
           {copied ? (
             <>

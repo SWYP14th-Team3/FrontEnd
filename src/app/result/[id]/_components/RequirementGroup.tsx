@@ -25,7 +25,7 @@ function RequirementGroup({ label, requirements, openMap, onOpenChange, onExpand
   return (
     <div className="rounded-xl bg-white px-4 pt-[30px] pb-5">
       <div className="mb-[19px] flex items-start justify-between">
-        <h3 className="text-[18px] font-weight-semibold text-[rgba(0,0,0,0.7)]">{label}</h3>
+        <h3 className="text-heading-xs font-weight-semibold text-gray-70">{label}</h3>
         <span className="text-body-sm font-weight-medium text-gray-30">
           <button type="button" className="cursor-pointer hover:text-gray-50" onClick={onExpandAll}>
             모두 펼치기

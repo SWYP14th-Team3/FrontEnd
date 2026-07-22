@@ -20,7 +20,7 @@ function FeedbackSection({ analysisId, initialSatisfaction }: FeedbackSectionPro
     return (
       <div className="flex items-center gap-[3px]">
         <CheckboxIcon className="size-[23px] shrink-0" />
-        <span className="font-weight-medium text-[18px] whitespace-nowrap text-gray-40">의견이 반영되었어요!</span>
+        <span className="whitespace-nowrap text-heading-xs font-weight-medium text-gray-40">의견이 반영되었어요!</span>
       </div>
     );
   }
