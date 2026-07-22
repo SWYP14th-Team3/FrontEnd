@@ -4,7 +4,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import { Slot } from '@/components/ui/Slot';
 
-const buttonVariants = cva('flex items-center justify-center rounded-xxxl font-weight-semibold', {
+const buttonVariants = cva('flex items-center justify-center rounded-xxxl font-weight-semibold disabled:cursor-not-allowed disabled:bg-gray-20 disabled:text-gray-40', {
   variants: {
     variant: {
       primary: 'bg-primary-40 text-gray-0 hover:bg-primary-50 cursor-pointer',
