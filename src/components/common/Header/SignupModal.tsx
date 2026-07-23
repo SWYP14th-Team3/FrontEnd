@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
-import { authKeys } from '@/api/auth/queries';
+import { authKeys, useAgreements } from '@/api/auth/queries';
 import { CheckIcon } from '@/components/icon/CheckIcon';
 import { ChevronRightIcon } from '@/components/icon/ChevronRightIcon';
 import Link from 'next/link';
@@ -19,6 +19,7 @@ function SignupModal({ isOpen, close, unmount }: SignupModalProps) {
   const queryClient = useQueryClient();
   const [termsAgreed, setTermsAgreed] = useState(false);
   const [privacyAgreed, setPrivacyAgreed] = useState(false);
+  const { mutate: submitAgreements, isPending } = useAgreements();
 
   if (!isOpen) return null;
 
@@ -37,9 +38,15 @@ function SignupModal({ isOpen, close, unmount }: SignupModalProps) {
 
   const handleSubmit = () => {
     if (!allAgreed) return;
-    localStorage.setItem('terms_agreed', 'true');
-    queryClient.invalidateQueries({ queryKey: authKeys.me() });
-    handleClose();
+    submitAgreements(
+      { termsAgreed: true, privacyAgreed: true },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: authKeys.me() });
+          handleClose();
+        },
+      },
+    );
   };
 
   return (
@@ -149,7 +156,7 @@ function SignupModal({ isOpen, close, unmount }: SignupModalProps) {
             {/* 한끗 시작하기 버튼 */}
             <button
               type="button"
-              disabled={!allAgreed}
+              disabled={!allAgreed || isPending}
               className={cn(
                 'w-[311px] rounded-xl px-[62px] py-[14px] text-center text-body-lg font-weight-semibold tracking-[-0.57px]',
                 allAgreed ? 'bg-primary-40 text-gray-0' : 'cursor-not-allowed bg-gray-20 text-gray-40',

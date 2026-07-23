@@ -25,7 +25,6 @@ function LogoutConfirmModal({ isOpen, close, unmount }: LogoutConfirmModalProps)
       onSuccess: () => {
         queryClient.setQueryData(authKeys.me(), null);
         queryClient.removeQueries({ queryKey: authKeys.me() });
-        localStorage.removeItem('terms_agreed');
         handleClose();
       },
     });
