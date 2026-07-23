@@ -8,12 +8,12 @@ import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 
 type ResumePanelProps = {
   resumeText: string;
-  lastSavedAt: string | null;
+  resumeLastSavedAt: string | null;
   isAutoSaving: boolean;
   onChange: (text: string) => void;
 };
 
-function ResumePanel({ resumeText, lastSavedAt, isAutoSaving, onChange }: ResumePanelProps) {
+function ResumePanel({ resumeText, resumeLastSavedAt, isAutoSaving, onChange }: ResumePanelProps) {
   const { copied, copy } = useCopyToClipboard();
 
   const handleCopy = () => {
@@ -25,8 +25,8 @@ function ResumePanel({ resumeText, lastSavedAt, isAutoSaving, onChange }: Resume
   };
 
   const formattedTime =
-    lastSavedAt != null
-      ? new Date(lastSavedAt).toLocaleTimeString('ko-KR', {
+    resumeLastSavedAt != null
+      ? new Date(resumeLastSavedAt).toLocaleTimeString('ko-KR', {
           hour: '2-digit',
           minute: '2-digit',
           hour12: false,
