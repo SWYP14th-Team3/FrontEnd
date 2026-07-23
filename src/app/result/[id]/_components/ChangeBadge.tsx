@@ -34,7 +34,7 @@ function ChangeBadge({ label, variant, prev, next }: ChangeBadgeProps) {
       <span className={cn('text-body-lg font-weight-semibold px-1.5', styles.text)}>{label}</span>
       <span
         className={cn(
-          'font-weight-medium text-gray-0 flex size-[21px] items-center justify-center rounded-full text-[15px]',
+          'font-weight-medium text-gray-0 flex size-[21px] items-center justify-center rounded-full text-body-sm',
           styles.prevCircle,
         )}
       >
@@ -43,7 +43,7 @@ function ChangeBadge({ label, variant, prev, next }: ChangeBadgeProps) {
       <ArrowRightIcon className="text-gray-40 size-[23px]" />
       <span
         className={cn(
-          'font-weight-medium text-gray-0 flex size-[21px] items-center justify-center rounded-full text-[15px]',
+          'font-weight-medium text-gray-0 flex size-[21px] items-center justify-center rounded-full text-body-sm',
           styles.nextCircle,
         )}
       >

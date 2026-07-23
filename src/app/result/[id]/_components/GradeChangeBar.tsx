@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { cn } from '@/lib/utils';
 import { LevelUpIcon } from '@/components/icon/LevelUpIcon';
 import { ChangeBadge } from './ChangeBadge';
 
@@ -28,9 +29,10 @@ function GradeChangeBar({ greenCount, yellowCount, redCount, previousCounts }: G
 
   return (
     <div
-      className={`flex flex-col gap-3 rounded-xxl bg-white px-4 py-3 transition-all duration-500 ease-out sm:flex-row sm:items-center sm:gap-[31px] sm:px-5 ${
-        visible ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0'
-      }`}
+      className={cn(
+        'flex flex-col gap-3 rounded-xxl bg-white px-4 py-3 transition-all duration-500 ease-out sm:flex-row sm:items-center sm:gap-[31px] sm:px-5',
+        visible ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0',
+      )}
     >
       {isImproved && (
         <div className="flex items-center gap-[9px]">
