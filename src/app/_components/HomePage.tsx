@@ -5,12 +5,27 @@ import { useRouter } from 'next/navigation';
 import { overlay } from 'overlay-kit';
 import { useUser } from '@/hooks/useUser';
 import { useCreateAnalysis } from '@/api/analysis/queries';
+import { ApiRequestError } from '@/lib/errors';
 import { LoginModal } from '@/components/common/Header/LoginModal';
 import { Button } from '@/components/ui/Button/Button';
 import { TERMS_OF_SERVICE_URL } from '@/constants/links';
 import { HeroSection } from './HeroSection';
 import { ResumeUploadCard } from './ResumeUploadCard';
 import { JobPostingCard } from './JobPostingCard';
+
+const ANALYSIS_ERROR_MESSAGES: Record<string, string> = {
+  RESUME_LOAD_FAILED: '이력서를 불러오지 못했어요. 파일을 다시 업로드한 뒤 분석을 시도해주세요.',
+  JOB_POSTING_LOAD_FAILED: '채용공고를 불러오지 못했어요. URL은 그대로 두고 텍스트를 직접 붙여넣거나 공고 캡쳐 이미지를 업로드해주세요.',
+  RESUME_AND_JOB_POSTING_LOAD_FAILED: '이력서와 채용공고를 불러오지 못했어요. 파일을 다시 업로드하고, 채용공고 내용을 직접 붙여넣어주세요.',
+  INVALID_PDF_FILE: 'PDF만 가능합니다.',
+  PDF_FILE_TOO_LARGE: '10MB 이하만 업로드할 수 있습니다.',
+  INVALID_JOB_URL: '올바른 URL을 입력해주세요.',
+  JOB_TEXT_TOO_SHORT: '공고 내용은 100자 이상 입력해주세요.',
+  JOB_TEXT_TOO_LONG: '공고 내용은 6000자 미만으로 입력해주세요.',
+  TOO_MANY_JOB_IMAGES: '최대 10장까지 업로드 가능합니다.',
+  INVALID_JOB_IMAGE_FORMAT: 'JPG, PNG만 가능합니다.',
+  ANALYSIS_FAILED: '분석에 실패했어요. 다시 시도해주세요.',
+};
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
@@ -21,6 +36,7 @@ function HomePage() {
 
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState('');
+  const [analysisError, setAnalysisError] = useState('');
   const [jobUrl, setJobUrl] = useState('');
   const [jobText, setJobText] = useState('');
   const [contentMode, setContentMode] = useState<'text' | 'image'>('text');
@@ -89,17 +105,33 @@ function HomePage() {
     const formData = new FormData();
     formData.append('resumeFile', resumeFile);
 
-    if (jobUrl.trim()) {
+    const hasUrlInput = jobUrl.trim() !== '';
+    const hasImageInput = jobImages.length > 0;
+
+    if (hasUrlInput) {
       formData.append('jobInputType', 'URL');
       formData.append('jobUrl', jobUrl.trim());
+    } else if (hasImageInput) {
+      formData.append('jobInputType', 'IMAGE');
+      for (const image of jobImages) {
+        formData.append('jobImages', image);
+      }
     } else {
       formData.append('jobInputType', 'TEXT');
       formData.append('jobText', jobText.trim());
     }
 
+    setAnalysisError('');
     createAnalysis(formData, {
       onSuccess: (data) => {
         router.push(`/result/${data.analysisResultId}`);
+      },
+      onError: (error) => {
+        if (error instanceof ApiRequestError && error.errorType) {
+          setAnalysisError(ANALYSIS_ERROR_MESSAGES[error.errorType] ?? error.message);
+        } else {
+          setAnalysisError(error.message || '분석 중 오류가 발생했습니다.');
+        }
       },
     });
   };
@@ -157,6 +189,10 @@ function HomePage() {
       >
         {isPending ? '분석 중...' : '분석하기'}
       </Button>
+
+      {analysisError && (
+        <p className="mt-3 max-w-[500px] text-center text-body-sm font-weight-medium text-red-500">{analysisError}</p>
+      )}
 
       <a
         href={TERMS_OF_SERVICE_URL}
