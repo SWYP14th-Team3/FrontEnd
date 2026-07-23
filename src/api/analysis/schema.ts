@@ -5,35 +5,34 @@ import { z } from 'zod';
 export const overallLevelSchema = z.enum(['HIGH', 'MEDIUM', 'LOW']);
 export const matchStatusSchema = z.enum(['CONFIRMED', 'NEEDS_IMPROVEMENT', 'MISSING']);
 export const requirementCategorySchema = z.enum(['자격요건', '업무역량', '도메인', '우대사항']);
-export const jobInputTypeSchema = z.enum(['URL', 'TEXT']);
+export const jobInputTypeSchema = z.enum(['URL', 'TEXT', 'IMAGE']);
 export const satisfactionSchema = z.enum(['LIKE', 'DISLIKE']).nullable();
-export const satisfactionRequestValueSchema = z.enum(['LIKE', 'DISLIKE', 'NULL']);
 
 // ── 중첩 엔티티 스키마 ─────────────────────────────────
 
 export const evaluationSchema = z.object({
   evaluationId: z.number(),
   matchStatus: matchStatusSchema,
+  displayTitle: z.string(),
   resumeEvidence: z.string().nullable(),
+  judgeReason: z.string(),
   feedback: z.string().nullable(),
   revisionSuggestion: z.string().nullable(),
+  effectScore: z.number().nullable(),
+  effortScore: z.number().nullable(),
+  priorityScore: z.number().nullable(),
+  sortOrder: z.number(),
 });
 
-/** 공고 요건 (전체 필드 — 최초 분석/상세 조회용) */
+/** 공고 요건 */
 export const requirementSchema = z.object({
   requirementId: z.number(),
+  requirementType: z.enum(['REQUIRED', 'PREFERRED']),
   category: requirementCategorySchema,
   title: z.string(),
   description: z.string().nullable(),
-  sourceText: z.string().nullable(),
-  evaluation: evaluationSchema,
-});
-
-/** 공고 요건 (재분석용 — description, sourceText 미포함) */
-export const reanalysisRequirementSchema = z.object({
-  requirementId: z.number(),
-  category: requirementCategorySchema,
-  title: z.string(),
+  jdEvidence: z.string().nullable(),
+  inputOrder: z.number(),
   evaluation: evaluationSchema,
 });
 
@@ -48,17 +47,26 @@ export const analysisResultSchema = z.object({
   redCount: z.number(),
   yellowCount: z.number(),
   greenCount: z.number(),
+  previousOverallLevel: overallLevelSchema.nullable(),
+  previousRedCount: z.number().nullable(),
+  previousYellowCount: z.number().nullable(),
+  previousGreenCount: z.number().nullable(),
+  lastReanalyzedAt: z.string().nullable(),
   retryCount: z.number(),
   remainingRetryCount: z.number(),
   satisfaction: satisfactionSchema,
   jobInputType: jobInputTypeSchema,
   jobUrl: z.string().nullable(),
-  jobPostingRaw: z.string(),
-  resumeOriginalText: z.string(),
+  jobPlatform: z.string().nullable(),
+  jobOriginalText: z.string(),
+  jobSummaryText: z.string(),
   resumeCurrentText: z.string(),
+  resumeFileName: z.string().nullable(),
+  resumeFileSize: z.number().nullable(),
+  resumeLastSavedAt: z.string().nullable(),
+  finalSavedAt: z.string().nullable(),
   createdAt: z.string(),
   updatedAt: z.string(),
-  lastSavedAt: z.string().nullable(),
   requirements: z.array(requirementSchema),
 });
 
@@ -75,28 +83,36 @@ export const analysisListItemSchema = z.object({
   remainingRetryCount: z.number(),
   createdAt: z.string(),
   updatedAt: z.string(),
-  lastSavedAt: z.string().nullable(),
+  finalSavedAt: z.string().nullable(),
 });
 
 /** PATCH /analyses/{id}/resume 응답 data */
 export const autoSaveResumeResponseSchema = z.object({
   analysisResultId: z.number(),
   resumeCurrentText: z.string(),
-  updatedAt: z.string(),
+  resumeLastSavedAt: z.string(),
+  finalSavedAt: z.string().nullable(),
 });
 
 /** POST /analyses/{id}/reanalyze 응답 data */
 export const reanalyzeResponseSchema = z.object({
   analysisResultId: z.number(),
+  previousOverallLevel: overallLevelSchema,
+  previousRedCount: z.number(),
+  previousYellowCount: z.number(),
+  previousGreenCount: z.number(),
   overallLevel: overallLevelSchema,
   redCount: z.number(),
   yellowCount: z.number(),
   greenCount: z.number(),
+  lastReanalyzedAt: z.string(),
   retryCount: z.number(),
   remainingRetryCount: z.number(),
   resumeCurrentText: z.string(),
+  resumeLastSavedAt: z.string(),
+  finalSavedAt: z.string().nullable(),
   updatedAt: z.string(),
-  requirements: z.array(reanalysisRequirementSchema),
+  requirements: z.array(requirementSchema),
 });
 
 /** PATCH /analyses/{id}/save 응답 data */
@@ -104,8 +120,8 @@ export const saveAnalysisResponseSchema = z.object({
   analysisResultId: z.number(),
   saved: z.boolean(),
   resumeCurrentText: z.string(),
-  lastSavedAt: z.string(),
-  updatedAt: z.string(),
+  resumeLastSavedAt: z.string(),
+  finalSavedAt: z.string(),
 });
 
 /** DELETE /analyses/{id} 응답 data */
