@@ -7,15 +7,17 @@ import { ThumbDownIcon } from '@/components/icon/ThumbDownIcon';
 import { CheckboxIcon } from '@/components/icon/CheckboxIcon';
 
 type FeedbackProps = React.ComponentProps<'div'> & {
-  onFeedback?: (type: 'up' | 'down') => void;
+  initialSelected?: 'up' | 'down' | null;
+  onFeedback?: (type: 'up' | 'down' | null) => void;
 };
 
-function Feedback({ className, onFeedback, ...props }: FeedbackProps) {
-  const [selected, setSelected] = useState<'up' | 'down' | null>(null);
+function Feedback({ className, initialSelected = null, onFeedback, ...props }: FeedbackProps) {
+  const [selected, setSelected] = useState<'up' | 'down' | null>(initialSelected);
 
   function handleClick(type: 'up' | 'down') {
     if (selected === type) {
       setSelected(null);
+      onFeedback?.(null);
     } else {
       setSelected(type);
       onFeedback?.(type);
@@ -54,7 +56,10 @@ function Feedback({ className, onFeedback, ...props }: FeedbackProps) {
           </div>
           <button
             type="button"
-            onClick={() => setSelected(null)}
+            onClick={() => {
+              setSelected(null);
+              onFeedback?.(null);
+            }}
             className="font-weight-medium text-gray-30 cursor-pointer text-[18px] whitespace-nowrap underline"
           >
             재클릭시 변경 가능
