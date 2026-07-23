@@ -57,3 +57,18 @@ export type SocialLoginResponse = z.infer<typeof socialLoginResponseSchema>;
 
 /** POST /api/auth/logout 응답 data */
 export type LogoutResponse = z.infer<typeof logoutResponseSchema>;
+
+/** POST /api/auth/agreements 요청 바디 */
+export type AgreementsRequest = {
+  termsAgreed: boolean;
+  privacyAgreed: boolean;
+};
+
+/** POST /api/auth/agreements 응답 data */
+export type AgreementsResponse = {
+  userId: number;
+  termsAgreedAt: string;
+  privacyAgreedAt: string;
+  termsVersion: string;
+  privacyVersion: string;
+};
