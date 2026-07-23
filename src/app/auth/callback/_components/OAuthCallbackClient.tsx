@@ -14,9 +14,12 @@ export function OAuthCallbackClient() {
   const provider = searchParams.get('provider') as 'kakao' | 'google' | null;
 
   const { mutate: loginCallback, isError } = useSocialLoginCallback({
-    onSuccess: () => {
+    onSuccess: (response) => {
       if (window.opener) {
-        window.opener.postMessage({ type: 'OAUTH_SUCCESS' }, window.location.origin);
+        window.opener.postMessage(
+          { type: 'OAUTH_SUCCESS', termsRequired: response.termsRequired },
+          window.location.origin,
+        );
         window.close();
       } else {
         router.replace('/');
