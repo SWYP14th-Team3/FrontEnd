@@ -45,15 +45,17 @@ export async function POST(request: Request) {
       return Response.json({ status: 500, message: '인증 토큰을 받지 못했습니다.', data: null }, { status: 500 });
     }
 
-    const { accessToken, refreshToken } = data as {
+    const { accessToken, refreshToken, isNewUser, termsRequired } = data as {
       accessToken: string;
       refreshToken: string;
+      isNewUser: boolean;
+      termsRequired: boolean;
     };
 
     const cookieStore = await cookies();
     setAuthCookies(cookieStore, accessToken, refreshToken);
 
-    return Response.json({ status: 200, message: '로그인 성공', data: { success: true } });
+    return Response.json({ status: 200, message: '로그인 성공', data: { success: true, isNewUser, termsRequired } });
   } catch (error) {
     console.error('[OAuth Session] Error:', error);
     return Response.json({ status: 500, message: '내부 서버 오류', data: null }, { status: 500 });
