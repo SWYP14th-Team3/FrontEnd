@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__claude_ai_Notion__fetch",
+      "Bash(git add:*)",
+      "Bash(git commit -m ':*)",
+      "mcp__claude_ai_Figma__get_design_context",
+      "mcp__claude_ai_Figma__get_screenshot",
+      "WebSearch",
+      "mcp__claude_ai_Figma__download_assets",
+      "WebFetch(domain:api.resufit.site)",
+      "Bash(gh api:*)",
+      "Write",
+      "Edit",
+      "Bash(mkdir *)",
+      "Bash(pnpm *)",
+      "Bash(ls *)",
+      "WebFetch(domain:github.com)"
+    ]
+  }
+}
