@@ -75,9 +75,10 @@ export function ResultPageClient({ id }: ResultPageClientProps) {
     save.mutate(
       { resumeCurrentText: resumeText },
       {
-        onSuccess: () => {
+        onSuccess: (response) => {
           setIsDirty(false);
           savedTextRef.current = resumeText;
+          setResumeLastSavedAt(response.resumeLastSavedAt);
           setIsSaveModalOpen(true);
         },
       },
@@ -109,9 +110,7 @@ export function ResultPageClient({ id }: ResultPageClientProps) {
             yellowCount={data.yellowCount}
             redCount={data.redCount}
             previousCounts={
-              data.previousGreenCount != null &&
-              data.previousYellowCount != null &&
-              data.previousRedCount != null
+              data.previousGreenCount != null && data.previousYellowCount != null && data.previousRedCount != null
                 ? {
                     greenCount: data.previousGreenCount,
                     yellowCount: data.previousYellowCount,
@@ -119,6 +118,7 @@ export function ResultPageClient({ id }: ResultPageClientProps) {
                   }
                 : null
             }
+            previousOverallLevel={data.previousOverallLevel}
           />
 
           <div className="flex flex-col items-stretch gap-[9px] lg:flex-row [&>*]:min-w-0 lg:[&>*]:flex-1">
