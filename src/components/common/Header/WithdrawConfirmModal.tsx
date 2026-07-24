@@ -1,7 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
+import { authKeys, useDeleteAccount, useLogout } from '@/api/auth/queries';
 import { WarningIcon } from '@/components/icon/WarningIcon';
 import { CheckIcon } from '@/components/icon/CheckIcon';
 
@@ -12,7 +15,11 @@ type WithdrawConfirmModalProps = {
 };
 
 function WithdrawConfirmModal({ isOpen, close, unmount }: WithdrawConfirmModalProps) {
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const [agreed, setAgreed] = useState(false);
+  const { mutate: withdraw, isPending: isWithdrawing } = useDeleteAccount();
+  const { mutate: logout } = useLogout();
 
   if (!isOpen) return null;
 
@@ -22,34 +29,54 @@ function WithdrawConfirmModal({ isOpen, close, unmount }: WithdrawConfirmModalPr
   };
 
   const handleWithdraw = () => {
-    if (!agreed) return;
-    console.warn('탈퇴 API 미구현');
-    handleClose();
+    if (!agreed || isWithdrawing) return;
+    withdraw(undefined, {
+      onSuccess: () => {
+        logout(undefined, {
+          onSuccess: () => {
+            queryClient.setQueryData(authKeys.me(), null);
+            queryClient.removeQueries({ queryKey: authKeys.me() });
+            handleClose();
+            router.push('/');
+          },
+          onError: () => {
+            handleClose();
+            router.push('/');
+          },
+        });
+      },
+      onError: () => {
+        alert('회원 탈퇴에 실패했습니다. 다시 시도해주세요.');
+      },
+    });
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={handleClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      onClick={isWithdrawing ? undefined : handleClose}
+    >
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="withdraw-title"
-        className="flex flex-col rounded-xxxl border border-gray-10 bg-gray-0 px-[38px] py-[51px] shadow-[0px_4px_10px_rgba(0,0,0,0.05)]"
+        className="rounded-xxxl border-gray-10 bg-gray-0 flex flex-col border px-[38px] py-[51px] shadow-[0px_4px_10px_rgba(0,0,0,0.05)]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex w-[458px] flex-col justify-between">
           {/* 타이틀 */}
           <div className="flex flex-col gap-[9px]">
-            <h2 id="withdraw-title" className="text-heading-md font-weight-semibold tracking-[-0.72px] text-gray-90">
+            <h2 id="withdraw-title" className="text-heading-md font-weight-semibold text-gray-90 tracking-[-0.72px]">
               더이상 한끗을 이용하지 않으시나요?
             </h2>
-            <p className="text-heading-xs font-weight-semibold tracking-[-0.51px] text-gray-40">
+            <p className="text-heading-xs font-weight-semibold text-gray-40 tracking-[-0.51px]">
               다시 가입할 수 있지만 이전 기록은 복구되지 않아요.
             </p>
           </div>
 
           {/* 안내 박스 + 체크박스 */}
           <div className="mt-[39px] flex flex-col gap-[28px]">
-            <div className="w-full bg-gray-10 px-[24px] py-[19px]">
+            <div className="bg-gray-10 w-full px-[24px] py-[19px]">
               <p className="text-heading-xs font-weight-semibold tracking-[-0.51px] text-black">
                 탈퇴하면 아래 정보가 모두 삭제되고 복구할 수 없어요
               </p>
@@ -87,17 +114,18 @@ function WithdrawConfirmModal({ isOpen, close, unmount }: WithdrawConfirmModalPr
           <div className="mt-[44px] flex gap-[10px]">
             <button
               type="button"
-              className="w-[224px] rounded-xl bg-gray-5 py-[14px] text-body-lg font-weight-semibold text-gray-60"
+              disabled={isWithdrawing}
+              className="bg-gray-5 text-body-lg font-weight-semibold text-gray-60 w-[224px] rounded-xl py-[14px]"
               onClick={handleClose}
             >
               더 써볼래요
             </button>
             <button
               type="button"
-              disabled={!agreed}
+              disabled={!agreed || isWithdrawing}
               className={cn(
-                'w-[224px] rounded-xl py-[14px] text-body-lg font-weight-semibold',
-                agreed ? 'bg-primary-40 text-gray-0' : 'cursor-not-allowed bg-gray-20 text-gray-40',
+                'text-body-lg font-weight-semibold w-[224px] rounded-xl py-[14px]',
+                agreed ? 'bg-primary-40 text-gray-0' : 'bg-gray-20 text-gray-40 cursor-not-allowed',
               )}
               onClick={handleWithdraw}
             >
