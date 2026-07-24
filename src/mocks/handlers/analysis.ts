@@ -1,9 +1,12 @@
 import { http, HttpResponse } from 'msw';
 
-import { mockAnalysisResult, mockPaginatedAnalysisList } from '@/mocks/data/analysis';
+import { mockAnalysisResult, mockAnalysisListItems } from '@/mocks/data/analysis';
 
 // 재분석 시 변경되는 상태
 let reanalyzed = false;
+
+// 인메모리 목 데이터 (삭제 반영용)
+let mutableListItems = [...mockAnalysisListItems];
 
 const reanalyzedOverrides = {
   overallLevel: 'HIGH' as const,
@@ -42,11 +45,33 @@ export const analysisHandlers = [
     });
   }),
 
-  http.get('/api/analyses', () => {
+  http.get('/api/analyses', ({ request }) => {
+    const url = new URL(request.url);
+    const page = Number(url.searchParams.get('page') ?? '0');
+    const size = Number(url.searchParams.get('size') ?? '10');
+    const companyName = url.searchParams.get('companyName') ?? '';
+
+    let filtered = mutableListItems;
+    if (companyName) {
+      filtered = filtered.filter((item) => item.companyName?.includes(companyName));
+    }
+
+    const totalElements = filtered.length;
+    const totalPages = Math.max(1, Math.ceil(totalElements / size));
+    const start = page * size;
+    const content = filtered.slice(start, start + size);
+
     return HttpResponse.json({
       status: 200,
       message: '분석 목록 조회 성공',
-      data: mockPaginatedAnalysisList,
+      data: {
+        content,
+        page,
+        size,
+        totalElements,
+        totalPages,
+        last: page >= totalPages - 1,
+      },
     });
   }),
 
@@ -100,14 +125,16 @@ export const analysisHandlers = [
     });
   }),
 
-  http.delete('/api/analyses/:id', () => {
+  http.delete('/api/analyses/:id', ({ params }) => {
+    const id = Number(params.id);
+    mutableListItems = mutableListItems.filter((item) => item.analysisResultId !== id);
     return HttpResponse.json({
       status: 200,
       message: '분석 결과 삭제 성공',
       data: {
-        analysisResultId: 1,
+        analysisResultId: id,
         deleted: true,
-        deletedAt: '2025-07-10T11:00:00',
+        deletedAt: new Date().toISOString(),
       },
     });
   }),
