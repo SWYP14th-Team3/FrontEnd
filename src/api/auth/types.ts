@@ -5,6 +5,7 @@ import type {
   reissueResponseSchema,
   socialLoginResponseSchema,
   logoutResponseSchema,
+  agreementsResponseSchema,
 } from './schema';
 
 // ── 백엔드 API 타입 (스키마에서 추출) ──────────────────
@@ -65,10 +66,4 @@ export type AgreementsRequest = {
 };
 
 /** POST /api/auth/agreements 응답 data */
-export type AgreementsResponse = {
-  userId: number;
-  termsAgreedAt: string;
-  privacyAgreedAt: string;
-  termsVersion: string;
-  privacyVersion: string;
-};
+export type AgreementsResponse = z.infer<typeof agreementsResponseSchema>;
