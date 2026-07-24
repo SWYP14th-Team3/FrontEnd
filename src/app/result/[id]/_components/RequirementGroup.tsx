@@ -21,7 +21,14 @@ type RequirementGroupProps = {
   onCollapseAll: () => void;
 };
 
-function RequirementGroup({ label, requirements, openMap, onOpenChange, onExpandAll, onCollapseAll }: RequirementGroupProps) {
+function RequirementGroup({
+  label,
+  requirements,
+  openMap,
+  onOpenChange,
+  onExpandAll,
+  onCollapseAll,
+}: RequirementGroupProps) {
   return (
     <div className="rounded-xl bg-white px-4 pt-[30px] pb-5">
       <div className="mb-[19px] flex items-start justify-between">
@@ -43,7 +50,7 @@ function RequirementGroup({ label, requirements, openMap, onOpenChange, onExpand
             rank={index + 1}
             variant={matchStatusToVariant(req.evaluation.matchStatus)}
             title={req.title}
-            description={req.evaluation.feedback ?? ''}
+            description={req.evaluation.judgeReason}
             suggestion={req.evaluation.revisionSuggestion ?? undefined}
             open={openMap[req.requirementId] ?? false}
             onOpenChange={(open) => onOpenChange(req.requirementId, open)}
