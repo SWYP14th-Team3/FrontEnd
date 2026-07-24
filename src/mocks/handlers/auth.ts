@@ -19,7 +19,7 @@ export const authHandlers = [
     return HttpResponse.json({
       status: 200,
       message: '로그인 성공',
-      data: { success: true },
+      data: { success: true, isNewUser: false, termsRequired: false },
     });
   }),
 
@@ -29,6 +29,42 @@ export const authHandlers = [
       status: 200,
       message: '로그아웃 성공',
       data: { success: true },
+    });
+  }),
+
+  http.post('/api/auth/agreements', () => {
+    if (!getMockAuthState()) {
+      return HttpResponse.json(
+        { status: 401, message: '인증 정보가 유효하지 않습니다.', data: null },
+        { status: 401 },
+      );
+    }
+
+    return HttpResponse.json({
+      status: 200,
+      message: '약관 동의 저장 성공',
+      data: {
+        userId: mockUser.id,
+        termsAgreedAt: new Date().toISOString(),
+        privacyAgreedAt: new Date().toISOString(),
+        termsVersion: 'v1.0',
+        privacyVersion: 'v1.0',
+      },
+    });
+  }),
+
+  http.delete('/api/auth/me', () => {
+    if (!getMockAuthState()) {
+      return HttpResponse.json(
+        { status: 401, message: '인증 정보가 유효하지 않습니다.', data: null },
+        { status: 401 },
+      );
+    }
+
+    setMockAuthState(false);
+    return HttpResponse.json({
+      status: 200,
+      message: 'OK',
     });
   }),
 

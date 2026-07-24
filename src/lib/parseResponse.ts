@@ -7,7 +7,7 @@ export async function parseResponse<T>(res: Response, schema?: z.ZodType<T>): Pr
 
   if (!res.ok) {
     const message = json.message || `API 요청 실패: ${res.status}`;
-    throw new ApiRequestError(res.status, message);
+    throw new ApiRequestError(res.status, message, json.errorType);
   }
 
   const data = (json as ApiResponse<T>).data;

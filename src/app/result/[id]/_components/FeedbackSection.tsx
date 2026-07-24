@@ -1,7 +1,6 @@
 'use client';
 
 import { Feedback } from '@/components/common/Feedback/Feedback';
-import { CheckboxIcon } from '@/components/icon/CheckboxIcon';
 import { useSatisfaction } from '@/api/analysis/queries';
 
 type FeedbackSectionProps = {
@@ -12,20 +11,18 @@ type FeedbackSectionProps = {
 function FeedbackSection({ analysisId, initialSatisfaction }: FeedbackSectionProps) {
   const { mutate } = useSatisfaction(analysisId);
 
-  const handleFeedback = (type: 'up' | 'down') => {
-    mutate({ satisfaction: type === 'up' ? 'LIKE' : 'DISLIKE' });
+  const handleFeedback = (type: 'up' | 'down' | null) => {
+    mutate({ satisfaction: type === 'up' ? 'LIKE' : type === 'down' ? 'DISLIKE' : null });
   };
 
-  if (initialSatisfaction !== null) {
-    return (
-      <div className="flex items-center gap-[3px]">
-        <CheckboxIcon className="size-[23px] shrink-0" />
-        <span className="whitespace-nowrap text-heading-xs font-weight-medium text-gray-40">의견이 반영되었어요!</span>
-      </div>
-    );
-  }
-
-  return <Feedback onFeedback={handleFeedback} />;
+  return (
+    <Feedback
+      initialSelected={
+        initialSatisfaction === 'LIKE' ? 'up' : initialSatisfaction === 'DISLIKE' ? 'down' : null
+      }
+      onFeedback={handleFeedback}
+    />
+  );
 }
 
 export { FeedbackSection };

@@ -5,7 +5,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { useDebounce } from '@frontend-toolkit-js/hooks';
 import { analysisDetailOptions, useReanalyze, useSaveAnalysis, useAutoSaveResume } from '@/api/analysis/queries';
 import { ResultPageHeader } from './ResultPageHeader';
-import { SummaryCard, type PreviousCounts } from './SummaryCard';
+import { SummaryCard } from './SummaryCard';
 import { RequirementsPanel } from './RequirementsPanel';
 import { ResumePanel } from './ResumePanel';
 import { FeedbackSection } from './FeedbackSection';
@@ -21,7 +21,7 @@ export function ResultPageClient({ id }: ResultPageClientProps) {
   const { data } = useSuspenseQuery(analysisDetailOptions(id));
 
   const [resumeText, setResumeText] = useState(data.resumeCurrentText);
-  const [lastSavedAt, setLastSavedAt] = useState(data.lastSavedAt);
+  const [resumeLastSavedAt, setResumeLastSavedAt] = useState(data.resumeLastSavedAt);
 
   const debouncedResumeText = useDebounce(resumeText, 500);
   const autoSave = useAutoSaveResume(id);
@@ -40,7 +40,7 @@ export function ResultPageClient({ id }: ResultPageClientProps) {
         { resumeCurrentText: debouncedResumeText },
         {
           onSuccess: (response) => {
-            setLastSavedAt(response.updatedAt);
+            setResumeLastSavedAt(response.resumeLastSavedAt);
             initialTextRef.current = debouncedResumeText;
           },
         },
@@ -53,15 +53,8 @@ export function ResultPageClient({ id }: ResultPageClientProps) {
   const [isDirty, setIsDirty] = useState(false);
   const savedTextRef = useRef(data.resumeCurrentText);
 
-  const [previousCounts, setPreviousCounts] = useState<PreviousCounts | null>(null);
-
   const reanalyze = useReanalyze(id);
   const handleReanalyze = () => {
-    setPreviousCounts({
-      greenCount: data.greenCount,
-      yellowCount: data.yellowCount,
-      redCount: data.redCount,
-    });
     reanalyze.mutate(
       { resumeCurrentText: resumeText },
       {
@@ -115,19 +108,29 @@ export function ResultPageClient({ id }: ResultPageClientProps) {
             greenCount={data.greenCount}
             yellowCount={data.yellowCount}
             redCount={data.redCount}
-            previousCounts={previousCounts}
+            previousCounts={
+              data.previousGreenCount != null &&
+              data.previousYellowCount != null &&
+              data.previousRedCount != null
+                ? {
+                    greenCount: data.previousGreenCount,
+                    yellowCount: data.previousYellowCount,
+                    redCount: data.previousRedCount,
+                  }
+                : null
+            }
           />
 
           <div className="flex flex-col items-stretch gap-[9px] lg:flex-row [&>*]:min-w-0 lg:[&>*]:flex-1">
             <RequirementsPanel
               requirements={data.requirements}
-              jobPostingRaw={data.jobPostingRaw}
+              jobOriginalText={data.jobOriginalText}
               jobUrl={data.jobUrl}
               jobInputType={data.jobInputType}
             />
             <ResumePanel
               resumeText={resumeText}
-              lastSavedAt={lastSavedAt}
+              resumeLastSavedAt={resumeLastSavedAt}
               isAutoSaving={autoSave.isPending}
               onChange={handleResumeChange}
             />

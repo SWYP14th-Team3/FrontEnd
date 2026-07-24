@@ -7,6 +7,7 @@ export const userSchema = z.object({
   email: z.string().nullable(),
   name: z.string().nullable(),
   provider: z.enum(['GOOGLE', 'KAKAO']),
+  termsRequired: z.boolean(),
 });
 
 /** POST /auth/oauth/{provider}/login 응답 data */
@@ -15,6 +16,8 @@ export const loginResponseSchema = z.object({
   refreshToken: z.string(),
   tokenType: z.string(),
   user: userSchema,
+  isNewUser: z.boolean(),
+  termsRequired: z.boolean(),
 });
 
 /** GET /auth/me 응답 data */
@@ -30,8 +33,19 @@ export const reissueResponseSchema = z.object({
 
 export const socialLoginResponseSchema = z.object({
   success: z.boolean(),
+  isNewUser: z.boolean(),
+  termsRequired: z.boolean(),
 });
 
 export const logoutResponseSchema = z.object({
   success: z.boolean(),
+});
+
+/** POST /auth/agreements 응답 data */
+export const agreementsResponseSchema = z.object({
+  userId: z.number(),
+  termsAgreedAt: z.string(),
+  privacyAgreedAt: z.string(),
+  termsVersion: z.string(),
+  privacyVersion: z.string(),
 });

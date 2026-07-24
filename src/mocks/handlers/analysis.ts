@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 
-import { mockAnalysisResult, mockPaginatedAnalysisList, mockReanalysisRequirements } from '@/mocks/data/analysis';
+import { mockAnalysisResult, mockPaginatedAnalysisList } from '@/mocks/data/analysis';
 
 // 재분석 시 변경되는 상태
 let reanalyzed = false;
@@ -24,7 +24,17 @@ export const analysisHandlers = [
   }),
 
   http.get('/api/analyses/:id', () => {
-    const data = reanalyzed ? { ...mockAnalysisResult, ...reanalyzedOverrides } : mockAnalysisResult;
+    const data = reanalyzed
+      ? {
+          ...mockAnalysisResult,
+          ...reanalyzedOverrides,
+          previousOverallLevel: mockAnalysisResult.overallLevel,
+          previousRedCount: mockAnalysisResult.redCount,
+          previousYellowCount: mockAnalysisResult.yellowCount,
+          previousGreenCount: mockAnalysisResult.greenCount,
+          lastReanalyzedAt: '2025-07-10T10:00:00',
+        }
+      : mockAnalysisResult;
     return HttpResponse.json({
       status: 200,
       message: '분석 결과 조회 성공',
@@ -48,7 +58,8 @@ export const analysisHandlers = [
       data: {
         analysisResultId: 1,
         resumeCurrentText: body.resumeCurrentText,
-        updatedAt: new Date().toISOString(),
+        resumeLastSavedAt: new Date().toISOString(),
+        finalSavedAt: null,
       },
     });
   }),
@@ -60,10 +71,17 @@ export const analysisHandlers = [
       message: '재분석 완료',
       data: {
         analysisResultId: 1,
+        previousOverallLevel: mockAnalysisResult.overallLevel,
+        previousRedCount: mockAnalysisResult.redCount,
+        previousYellowCount: mockAnalysisResult.yellowCount,
+        previousGreenCount: mockAnalysisResult.greenCount,
         ...reanalyzedOverrides,
+        lastReanalyzedAt: '2025-07-10T10:00:00',
         resumeCurrentText: mockAnalysisResult.resumeCurrentText,
+        resumeLastSavedAt: '2025-07-10T10:00:00',
+        finalSavedAt: null,
         updatedAt: '2025-07-10T10:00:00',
-        requirements: mockReanalysisRequirements,
+        requirements: mockAnalysisResult.requirements,
       },
     });
   }),
@@ -76,8 +94,8 @@ export const analysisHandlers = [
         analysisResultId: 1,
         saved: true,
         resumeCurrentText: '저장된 이력서 텍스트',
-        lastSavedAt: '2025-07-10T10:30:00',
-        updatedAt: '2025-07-10T10:30:00',
+        resumeLastSavedAt: '2025-07-10T10:30:00',
+        finalSavedAt: '2025-07-10T10:30:00',
       },
     });
   }),

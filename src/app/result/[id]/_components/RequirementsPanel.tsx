@@ -8,12 +8,12 @@ import { RequirementGroup } from './RequirementGroup';
 
 type RequirementsPanelProps = {
   requirements: Requirement[];
-  jobPostingRaw: string;
+  jobOriginalText: string;
   jobUrl: string | null;
-  jobInputType: 'URL' | 'TEXT';
+  jobInputType: 'URL' | 'TEXT' | 'IMAGE';
 };
 
-function RequirementsPanel({ requirements, jobPostingRaw }: RequirementsPanelProps) {
+function RequirementsPanel({ requirements, jobOriginalText }: RequirementsPanelProps) {
   const [tab, setTab] = useState<string>('priority');
   const [openMap, setOpenMap] = useState<Record<number, boolean>>({});
 
@@ -88,7 +88,7 @@ function RequirementsPanel({ requirements, jobPostingRaw }: RequirementsPanelPro
 
       {tab === 'original' && (
         <div className="max-h-[700px] overflow-y-auto rounded-xl bg-white p-4">
-          <p className="whitespace-pre-wrap text-body-sm font-weight-medium text-gray-90">{jobPostingRaw}</p>
+          <p className="whitespace-pre-wrap text-body-sm font-weight-medium text-gray-90">{jobOriginalText}</p>
         </div>
       )}
     </div>

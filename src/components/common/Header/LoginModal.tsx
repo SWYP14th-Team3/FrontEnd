@@ -51,16 +51,15 @@ function LoginModal({ isOpen, close, unmount }: LoginModalProps) {
   };
 
   const { mutate: mockLogin } = useSocialLoginCallback({
-    onSuccess: () => {
-      const hasAgreed = localStorage.getItem('terms_agreed');
-      if (hasAgreed) {
-        queryClient.invalidateQueries({ queryKey: authKeys.me() });
-        handleClose();
-      } else {
+    onSuccess: (response) => {
+      if (response.termsRequired) {
         handleClose();
         overlay.open(({ isOpen: signupIsOpen, close: signupClose, unmount: signupUnmount }) => (
           <SignupModal isOpen={signupIsOpen} close={signupClose} unmount={signupUnmount} />
         ));
+      } else {
+        queryClient.invalidateQueries({ queryKey: authKeys.me() });
+        handleClose();
       }
     },
     onError: () => {
@@ -75,15 +74,15 @@ function LoginModal({ isOpen, close, unmount }: LoginModalProps) {
       if (event.origin !== window.location.origin) return;
 
       if (event.data?.type === 'OAUTH_SUCCESS') {
-        const hasAgreed = localStorage.getItem('terms_agreed');
-        if (hasAgreed) {
-          queryClient.invalidateQueries({ queryKey: authKeys.me() });
-          handleClose();
-        } else {
+        const termsRequired = event.data?.termsRequired ?? false;
+        if (termsRequired) {
           handleClose();
           overlay.open(({ isOpen: signupIsOpen, close: signupClose, unmount: signupUnmount }) => (
             <SignupModal isOpen={signupIsOpen} close={signupClose} unmount={signupUnmount} />
           ));
+        } else {
+          queryClient.invalidateQueries({ queryKey: authKeys.me() });
+          handleClose();
         }
       }
 

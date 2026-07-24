@@ -9,4 +9,5 @@ export const mockUser: MockUser = {
   email: 'test@example.com',
   name: '홍길동',
   provider: 'KAKAO',
+  termsRequired: false,
 };

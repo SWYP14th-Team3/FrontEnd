@@ -1,10 +1,10 @@
-import { useMutation, queryOptions } from '@tanstack/react-query';
+import { useMutation, useQueryClient, queryOptions } from '@tanstack/react-query';
 
-import { postSocialLogin, postLogout, getMe } from './api';
+import { postSocialLogin, postLogout, getMe, postAgreements, deleteAccount } from './api';
 
 import type { ApiRequestError } from '@/lib/errors';
 import type { UseMutationOptions } from '@tanstack/react-query';
-import type { SocialLoginRequest, SocialLoginResponse, LogoutResponse } from './types';
+import type { SocialLoginRequest, SocialLoginResponse, LogoutResponse, AgreementsRequest, AgreementsResponse } from './types';
 
 export const authKeys = {
   all: ['auth'] as const,
@@ -35,6 +35,31 @@ export function useSocialLoginCallback(
 export function useLogout(options?: UseMutationOptions<LogoutResponse, ApiRequestError, void>) {
   return useMutation({
     mutationFn: () => postLogout(),
+    ...options,
+  });
+}
+
+/** POST /api/auth/agreements — 약관 동의 */
+export function useAgreements(options?: UseMutationOptions<AgreementsResponse, ApiRequestError, AgreementsRequest>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (body: AgreementsRequest) => postAgreements(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: authKeys.me() });
+    },
+    ...options,
+  });
+}
+
+/** DELETE /api/auth/me — 회원 탈퇴 */
+export function useDeleteAccount(options?: UseMutationOptions<void, ApiRequestError, void>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => deleteAccount(),
+    onSuccess: () => {
+      queryClient.setQueryData(authKeys.me(), null);
+      queryClient.removeQueries({ queryKey: authKeys.me() });
+    },
     ...options,
   });
 }
