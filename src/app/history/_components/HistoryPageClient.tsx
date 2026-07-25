@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { useDebounce } from '@frontend-toolkit-js/hooks';
 import { overlay } from 'overlay-kit';
 import { analysisListOptions } from '@/api/analysis/queries';
+import { Spinner } from '@/components/ui/Spinner/Spinner';
 import { AnalysisResultCard } from './AnalysisResultCard';
 import { SearchBar } from './SearchBar';
 import { SortDropdown } from './SortDropdown';
@@ -17,13 +18,19 @@ function HistoryPageClient() {
   const [searchValue, setSearchValue] = useState('');
   const debouncedSearch = useDebounce(searchValue, 300);
 
-  const { data } = useSuspenseQuery(
-    analysisListOptions({
+  const { data, isLoading, isFetching, isError, refetch } = useQuery({
+    ...analysisListOptions({
       page,
       size: 10,
       companyName: debouncedSearch || undefined,
     }),
-  );
+    placeholderData: keepPreviousData,
+  });
+
+  // #4: 삭제 후 현재 페이지가 비었지만 전체 데이터는 있을 때 첫 페이지로 리셋
+  if (data && data.content.length === 0 && data.totalElements > 0 && page > 0) {
+    setPage(0);
+  }
 
   const handleSearchChange = (value: string) => {
     setSearchValue(value);
@@ -52,19 +59,37 @@ function HistoryPageClient() {
         <SearchBar value={searchValue} onChange={handleSearchChange} />
       </div>
 
-      {/* 결과 리스트 또는 빈 상태 */}
-      {data.content.length === 0 ? (
+      {/* #1: 에러 상태 */}
+      {isError ? (
+        <div className="flex flex-col items-center justify-center gap-4 py-[120px]">
+          <p className="text-heading-xs font-weight-medium text-gray-40">분석 결과를 불러오지 못했어요.</p>
+          <button
+            type="button"
+            onClick={() => refetch()}
+            className="rounded-regular bg-primary-40 text-body-sm font-weight-semibold text-gray-0 px-4 py-2"
+          >
+            다시 시도하기
+          </button>
+        </div>
+      ) : isLoading ? (
+        <div className="flex items-center justify-center py-[120px]">
+          <Spinner size="lg" />
+        </div>
+      ) : !data || data.content.length === 0 ? (
         <EmptyState />
       ) : (
-        <div className="flex flex-col gap-3">
-          {data.content.map((item) => (
-            <AnalysisResultCard key={item.analysisResultId} item={item} onDelete={handleDelete} />
-          ))}
-        </div>
+        <>
+          {/* #3: 검색/페이지 전환 중 이전 데이터 위에 반투명 처리 */}
+          <div className={isFetching ? 'opacity-50 transition-opacity' : 'transition-opacity'}>
+            <div className="flex flex-col gap-3">
+              {data.content.map((item) => (
+                <AnalysisResultCard key={item.analysisResultId} item={item} onDelete={handleDelete} />
+              ))}
+            </div>
+            <Pagination currentPage={data.page} totalPages={data.totalPages} onPageChange={setPage} />
+          </div>
+        </>
       )}
-
-      {/* 페이지네이션 */}
-      <Pagination currentPage={data.page} totalPages={data.totalPages} onPageChange={setPage} />
     </div>
   );
 }
