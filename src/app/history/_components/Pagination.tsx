@@ -14,7 +14,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
   const pages = Array.from({ length: totalPages }, (_, i) => i);
 
   return (
-    <nav aria-label="페이지네이션" className="flex items-center justify-center gap-2 py-6">
+    <nav aria-label="페이지네이션" className="flex items-center justify-center gap-[3px] py-6">
       {pages.map((page) => (
         <button
           key={page}
@@ -22,8 +22,8 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
           onClick={() => onPageChange(page)}
           aria-current={page === currentPage ? 'page' : undefined}
           className={cn(
-            'rounded-regular text-body-sm font-weight-medium flex size-8 items-center justify-center transition-colors',
-            page === currentPage ? 'bg-primary-40 text-gray-0' : 'text-gray-40 hover:bg-gray-5',
+            'text-heading-xs font-weight-semibold flex h-[28px] items-center justify-center rounded-md text-center transition-colors',
+            page === currentPage ? 'bg-gray-5 text-primary-40 w-[28px]' : 'text-gray-20 w-[31px]',
           )}
         >
           {page + 1}
