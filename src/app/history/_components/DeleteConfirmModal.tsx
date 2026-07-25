@@ -10,7 +10,7 @@ type DeleteConfirmModalProps = {
 };
 
 function DeleteConfirmModal({ isOpen, close, unmount, analysisResultId }: DeleteConfirmModalProps) {
-  const { mutate: deleteAnalysis, isPending } = useDeleteAnalysis();
+  const { mutate: deleteAnalysis, isPending, isError } = useDeleteAnalysis();
 
   if (!isOpen) return null;
 
@@ -46,6 +46,9 @@ function DeleteConfirmModal({ isOpen, close, unmount, analysisResultId }: Delete
           <p className="text-heading-xs font-weight-semibold text-gray-40 tracking-[-0.51px]">
             삭제한 결과는 복구할 수 없어요.
           </p>
+          {isError && (
+            <p className="text-body-sm font-weight-medium text-danger-40 mt-1">삭제에 실패했어요. 다시 시도해주세요.</p>
+          )}
         </div>
 
         <div className="flex gap-[10px]">
