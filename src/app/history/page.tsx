@@ -1,5 +1,5 @@
-import { HistoryPageContainer } from './_components/HistoryPageContainer';
+import { HistoryPageClient } from './_components/HistoryPageClient';
 
 export default function HistoryPage() {
-  return <HistoryPageContainer />;
+  return <HistoryPageClient />;
 }
