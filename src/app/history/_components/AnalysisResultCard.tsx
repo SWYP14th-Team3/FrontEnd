@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { KebabIcon } from '@/components/icon/KebabIcon';
-import { TrashIcon } from '@/components/icon/TrashIcon';
+import { TablerTrashIcon } from '@/components/icon/TablerTrashIcon';
 import type { AnalysisListItem } from '@/api/analysis/types';
 
 type AnalysisResultCardProps = {
@@ -26,13 +27,21 @@ function formatDate(dateString: string) {
 }
 
 function AnalysisResultCard({ item, onDelete }: AnalysisResultCardProps) {
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const level = levelConfig[item.overallLevel];
   const displayName = item.companyName ?? '회사명 없음';
   const displayDate = item.finalSavedAt ?? item.createdAt;
 
+  const handleCardClick = () => {
+    router.push(`/result/${item.analysisResultId}`);
+  };
+
   return (
-    <div className="border-gray-10 bg-gray-0 hover:bg-gray-5 flex items-center gap-4 rounded-xl border px-6 py-5 transition-colors">
+    <div
+      className="bg-gray-5 hover:bg-gray-10 flex cursor-pointer items-center gap-4 rounded-xl px-6 py-5 transition-colors"
+      onClick={handleCardClick}
+    >
       {/* 등급 아이콘 */}
       <div
         className={cn(
@@ -44,16 +53,16 @@ function AnalysisResultCard({ item, onDelete }: AnalysisResultCardProps) {
       </div>
 
       {/* 회사 · 포지션 + 날짜 */}
-      <div className="flex-1">
-        <p className="text-heading-xs font-weight-semibold text-gray-90">
+      <div className="flex flex-1 items-center gap-3">
+        <p className="text-heading-md font-weight-semibold text-gray-90">
           {displayName} · {item.positionTitle}
         </p>
-        <p className="text-body-xs font-weight-medium text-gray-30 mt-0.5">{formatDate(displayDate)}</p>
+        <p className="text-body-md font-weight-medium text-[#B9B9B9]">{formatDate(displayDate)}</p>
       </div>
 
       {/* 재분석 + 남은 횟수 */}
-      <span className="text-body-xs font-weight-medium text-gray-40">재분석</span>
-      <span className="bg-primary-5 text-body-xs font-weight-semibold text-primary-40 rounded-[32px] px-2.5 py-1">
+      <span className="text-heading-xs font-weight-semibold text-gray-70">재분석</span>
+      <span className="bg-primary-10 text-heading-xs font-weight-semibold text-primary-60 rounded-xl px-[14px] py-[8px]">
         {item.remainingRetryCount}회남음
       </span>
 
@@ -77,14 +86,14 @@ function AnalysisResultCard({ item, onDelete }: AnalysisResultCardProps) {
             <div className="border-gray-10 bg-gray-0 absolute top-full right-0 z-20 mt-1 rounded-lg border py-1 shadow-[0px_4px_10px_rgba(0,0,0,0.1)]">
               <button
                 type="button"
-                className="text-body-sm font-weight-medium text-gray-60 hover:bg-gray-5 flex w-[126px] items-center gap-2 px-4 py-2.5"
+                className="text-heading-sm font-weight-semibold flex w-[140px] items-center gap-2.5 px-4 py-2.5 text-[#000000]"
                 onClick={(e) => {
                   e.stopPropagation();
                   setMenuOpen(false);
                   onDelete(item.analysisResultId);
                 }}
               >
-                <TrashIcon />
+                <TablerTrashIcon width={24} height={24} />
                 삭제하기
               </button>
             </div>
