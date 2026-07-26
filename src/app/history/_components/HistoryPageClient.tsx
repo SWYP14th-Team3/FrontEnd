@@ -27,19 +27,27 @@ function HistoryPageClient() {
     placeholderData: keepPreviousData,
   });
 
-  // #4: 삭제 후 현재 페이지가 비었지만 전체 데이터는 있을 때 첫 페이지로 리셋
-  if (data && data.content.length === 0 && data.totalElements > 0 && page > 0) {
-    setPage(0);
-  }
-
   const handleSearchChange = (value: string) => {
     setSearchValue(value);
     setPage(0);
   };
 
+  const handleDeleteSuccess = () => {
+    // 현재 페이지의 마지막 아이템을 삭제한 경우 이전 페이지로 이동
+    if (data && data.content.length <= 1 && page > 0) {
+      setPage(page - 1);
+    }
+  };
+
   const handleDelete = (analysisResultId: number) => {
     overlay.open(({ isOpen, close, unmount }) => (
-      <DeleteConfirmModal isOpen={isOpen} close={close} unmount={unmount} analysisResultId={analysisResultId} />
+      <DeleteConfirmModal
+        isOpen={isOpen}
+        close={close}
+        unmount={unmount}
+        analysisResultId={analysisResultId}
+        onDeleteSuccess={handleDeleteSuccess}
+      />
     ));
   };
 

@@ -7,9 +7,10 @@ type DeleteConfirmModalProps = {
   close: () => void;
   unmount: () => void;
   analysisResultId: number;
+  onDeleteSuccess?: () => void;
 };
 
-function DeleteConfirmModal({ isOpen, close, unmount, analysisResultId }: DeleteConfirmModalProps) {
+function DeleteConfirmModal({ isOpen, close, unmount, analysisResultId, onDeleteSuccess }: DeleteConfirmModalProps) {
   const { mutate: deleteAnalysis, isPending, isError } = useDeleteAnalysis();
 
   if (!isOpen) return null;
@@ -22,6 +23,7 @@ function DeleteConfirmModal({ isOpen, close, unmount, analysisResultId }: Delete
   const handleDelete = () => {
     deleteAnalysis(analysisResultId, {
       onSuccess: () => {
+        onDeleteSuccess?.();
         handleClose();
       },
     });
