@@ -34,7 +34,7 @@ function AnalysisResultCard({ item, onDelete }: AnalysisResultCardProps) {
   const displayDate = item.finalSavedAt ?? item.createdAt;
 
   const handleCardClick = () => {
-    router.push(`/result/${item.analysisResultId}`);
+    router.push(`/result/${item.analysisResultId}?from=history`);
   };
 
   return (
