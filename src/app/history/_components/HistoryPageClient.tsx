@@ -11,7 +11,7 @@ import { SearchBar } from './SearchBar';
 import { SortDropdown } from './SortDropdown';
 import { Pagination } from './Pagination';
 import { EmptyState } from './EmptyState';
-import { DeleteConfirmModal } from './DeleteConfirmModal';
+import { DeleteConfirmModal } from '@/components/common/DeleteConfirmModal';
 
 function HistoryPageClient() {
   const [page, setPage] = useState(0);

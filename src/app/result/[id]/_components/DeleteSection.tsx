@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { DeleteConfirmModal } from '@/app/history/_components/DeleteConfirmModal';
+import { DeleteConfirmModal } from '@/components/common/DeleteConfirmModal';
 
 type DeleteSectionProps = {
   analysisId: number;
