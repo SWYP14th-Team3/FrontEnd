@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import { overlay } from 'overlay-kit';
 import { authKeys, useSocialLoginCallback } from '@/api/auth/queries';
@@ -41,6 +42,7 @@ const getOAuthUrl = (provider: OAuthProvider) => {
 };
 
 function LoginModal({ isOpen, close, unmount }: LoginModalProps) {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const popupRef = useRef<Window | null>(null);
   const [error, setError] = useState<LoginError>('');
@@ -59,6 +61,7 @@ function LoginModal({ isOpen, close, unmount }: LoginModalProps) {
         ));
       } else {
         queryClient.invalidateQueries({ queryKey: authKeys.me() });
+        router.refresh();
         handleClose();
       }
     },
@@ -82,6 +85,7 @@ function LoginModal({ isOpen, close, unmount }: LoginModalProps) {
           ));
         } else {
           queryClient.invalidateQueries({ queryKey: authKeys.me() });
+          router.refresh();
           handleClose();
         }
       }
@@ -98,7 +102,7 @@ function LoginModal({ isOpen, close, unmount }: LoginModalProps) {
     return () => {
       window.removeEventListener('message', handleMessage);
     };
-  }, [isOpen, close, queryClient]);
+  }, [isOpen, close, queryClient, router]);
 
   if (!isOpen) return null;
 
@@ -133,15 +137,15 @@ function LoginModal({ isOpen, close, unmount }: LoginModalProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="login-title"
-        className="flex flex-col items-center gap-[27px] rounded-xxxl border border-gray-10 bg-gray-0 px-[39px] pb-[30px] pt-[50px] shadow-[0px_4px_10px_rgba(0,0,0,0.05)]"
+        className="rounded-xxxl border-gray-10 bg-gray-0 flex flex-col items-center gap-[27px] border px-[39px] pt-[50px] pb-[30px] shadow-[0px_4px_10px_rgba(0,0,0,0.05)]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* 타이틀 */}
         <div className="flex flex-col items-center gap-[5px]">
-          <h2 id="login-title" className="text-heading-md font-weight-semibold tracking-[-0.72px] text-gray-90">
+          <h2 id="login-title" className="text-heading-md font-weight-semibold text-gray-90 tracking-[-0.72px]">
             로그인
           </h2>
-          <p className="text-heading-xs font-weight-semibold tracking-[-0.51px] text-gray-40">
+          <p className="text-heading-xs font-weight-semibold text-gray-40 tracking-[-0.51px]">
             합격을 가르는 마지막 한 끗
           </p>
         </div>
@@ -156,27 +160,17 @@ function LoginModal({ isOpen, close, unmount }: LoginModalProps) {
           {/* 에러 메시지 */}
           <div className="h-[20px]">
             {error && (
-              <p className="text-body-xs font-weight-medium tracking-[-0.39px] text-gray-60">
-                {ERROR_MESSAGES[error]}
-              </p>
+              <p className="text-body-xs font-weight-medium text-gray-60 tracking-[-0.39px]">{ERROR_MESSAGES[error]}</p>
             )}
           </div>
 
           {/* 이용약관 링크 */}
-          <p className="text-body-xs font-weight-medium tracking-[-0.39px] text-gray-30">
-            <Link
-              href={TERMS_OF_SERVICE_URL}
-              target="_blank"
-              className="hover:underline"
-            >
+          <p className="text-body-xs font-weight-medium text-gray-30 tracking-[-0.39px]">
+            <Link href={TERMS_OF_SERVICE_URL} target="_blank" className="hover:underline">
               이용약관
             </Link>
             {' | '}
-            <Link
-              href={PRIVACY_POLICY_URL}
-              target="_blank"
-              className="hover:underline"
-            >
+            <Link href={PRIVACY_POLICY_URL} target="_blank" className="hover:underline">
               개인정보 처리방침
             </Link>
           </p>
