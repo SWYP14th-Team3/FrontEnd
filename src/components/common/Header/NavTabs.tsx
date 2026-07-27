@@ -14,7 +14,9 @@ function NavTabs() {
         <Link href="/">분석하기</Link>
       </TabMenu.Item>
       <TabMenu.Item value="history" asChild>
-        <Link href="/history">분석 기록</Link>
+        <Link href="/history" prefetch={false}>
+          분석 기록
+        </Link>
       </TabMenu.Item>
     </TabMenu>
   );
