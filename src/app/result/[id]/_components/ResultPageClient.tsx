@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useDebounce } from '@frontend-toolkit-js/hooks';
 import { analysisDetailOptions, useReanalyze, useSaveAnalysis, useAutoSaveResume } from '@/api/analysis/queries';
@@ -9,6 +10,7 @@ import { SummaryCard } from './SummaryCard';
 import { RequirementsPanel } from './RequirementsPanel';
 import { ResumePanel } from './ResumePanel';
 import { FeedbackSection } from './FeedbackSection';
+import { DeleteSection } from './DeleteSection';
 import { DisclaimerText } from './DisclaimerText';
 import { ReanalyzingOverlay } from './ReanalyzingOverlay';
 import { SaveCompleteModal } from './SaveCompleteModal';
@@ -18,6 +20,8 @@ type ResultPageClientProps = {
 };
 
 export function ResultPageClient({ id }: ResultPageClientProps) {
+  const searchParams = useSearchParams();
+  const fromHistory = searchParams.get('from') === 'history';
   const { data } = useSuspenseQuery(analysisDetailOptions(id));
 
   const [resumeText, setResumeText] = useState(data.resumeCurrentText);
@@ -139,6 +143,8 @@ export function ResultPageClient({ id }: ResultPageClientProps) {
       )}
 
       <FeedbackSection analysisId={id} initialSatisfaction={data.satisfaction} />
+
+      {fromHistory && <DeleteSection analysisId={id} />}
 
       <DisclaimerText />
 
