@@ -1,5 +1,6 @@
 'use client';
 
+import * as amplitude from '@amplitude/unified';
 import { Feedback } from '@/components/common/Feedback/Feedback';
 import { useSatisfaction } from '@/api/analysis/queries';
 
@@ -12,14 +13,19 @@ function FeedbackSection({ analysisId, initialSatisfaction }: FeedbackSectionPro
   const { mutate } = useSatisfaction(analysisId);
 
   const handleFeedback = (type: 'up' | 'down' | null) => {
-    mutate({ satisfaction: type === 'up' ? 'LIKE' : type === 'down' ? 'DISLIKE' : null });
+    mutate(
+      { satisfaction: type === 'up' ? 'LIKE' : type === 'down' ? 'DISLIKE' : null },
+      {
+        onSuccess: () => {
+          amplitude.track('Feedback Submitted', { type });
+        },
+      },
+    );
   };
 
   return (
     <Feedback
-      initialSelected={
-        initialSatisfaction === 'LIKE' ? 'up' : initialSatisfaction === 'DISLIKE' ? 'down' : null
-      }
+      initialSelected={initialSatisfaction === 'LIKE' ? 'up' : initialSatisfaction === 'DISLIKE' ? 'down' : null}
       onFeedback={handleFeedback}
     />
   );
