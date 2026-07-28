@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import * as amplitude from '@amplitude/unified';
 import { useCreateAnalysis } from '@/api/analysis/queries';
 import { ApiRequestError } from '@/lib/errors';
 import { useAnalysisFormStore } from '@/store/analysisFormStore';
@@ -84,6 +85,7 @@ function AnalyzingClient() {
     createAnalysis(formData, {
       onSuccess: (data) => {
         apiCompletedRef.current = true;
+        amplitude.track('Analysis Completed');
         timersRef.current.forEach(clearTimeout);
         timersRef.current = [];
         fastForwardToComplete(data.analysisResultId);
