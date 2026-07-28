@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
-import { authKeys, useDeleteAccount, useLogout } from '@/api/auth/queries';
+import { useDeleteAccount, useLogout } from '@/api/auth/queries';
 import { WarningIcon } from '@/components/icon/WarningIcon';
 import { CheckIcon } from '@/components/icon/CheckIcon';
 
@@ -34,8 +34,7 @@ function WithdrawConfirmModal({ isOpen, close, unmount }: WithdrawConfirmModalPr
       onSuccess: () => {
         logout(undefined, {
           onSuccess: () => {
-            queryClient.setQueryData(authKeys.me(), null);
-            queryClient.removeQueries({ queryKey: authKeys.me() });
+            queryClient.clear();
             handleClose();
             router.push('/');
           },

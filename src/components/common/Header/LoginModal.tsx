@@ -16,6 +16,7 @@ type LoginModalProps = {
   isOpen: boolean;
   close: () => void;
   unmount: () => void;
+  message?: string;
 };
 
 const IS_MSW = process.env.NEXT_PUBLIC_MSW_ENABLED === 'true';
@@ -41,7 +42,7 @@ const getOAuthUrl = (provider: OAuthProvider) => {
   return `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code`;
 };
 
-function LoginModal({ isOpen, close, unmount }: LoginModalProps) {
+function LoginModal({ isOpen, close, unmount, message }: LoginModalProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const popupRef = useRef<Window | null>(null);
@@ -146,7 +147,7 @@ function LoginModal({ isOpen, close, unmount }: LoginModalProps) {
             로그인
           </h2>
           <p className="text-heading-xs font-weight-semibold text-gray-40 tracking-[-0.51px]">
-            합격을 가르는 마지막 한 끗
+            {message ?? '합격을 가르는 마지막 한 끗'}
           </p>
         </div>
 
