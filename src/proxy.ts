@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 import { isExpiringSoon, getExpirationDate, decodePayload } from '@/lib/jwt';
 import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY, BASE_COOKIE_OPTIONS, REFRESH_COOKIE_OPTIONS } from '@/lib/cookies';
 
-const PROTECTED_ROUTES = ['/result', '/history'];
+const PROTECTED_ROUTES = ['/result', '/history', '/analyzing'];
 
 const REFRESH_ENDPOINT = `${process.env.BACKEND_URL}/api/auth/reissue`;
 
