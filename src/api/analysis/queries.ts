@@ -54,7 +54,8 @@ export function useCreateAnalysis() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (formData: FormData) => createAnalysis(formData),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      queryClient.setQueryData(analysisKeys.detail(data.analysisResultId), data);
       queryClient.invalidateQueries({ queryKey: analysisKeys.lists() });
     },
   });
