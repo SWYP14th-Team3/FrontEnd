@@ -1,5 +1,3 @@
-'use client';
-
 import { ProgressBar } from '@/components/ui/ProgressBar/ProgressBar';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
 
