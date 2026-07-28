@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import * as amplitude from '@amplitude/unified';
 import { overlay } from 'overlay-kit';
 import { useUser } from '@/hooks/useUser';
 import { useAnalysisFormStore } from '@/store/analysisFormStore';
@@ -24,6 +25,10 @@ function HomePage() {
   const [contentMode, setContentMode] = useState<'text' | 'image'>('text');
   const [jobImages, setJobImages] = useState<File[]>([]);
   const [jobImagePreviews, setJobImagePreviews] = useState<string[]>([]);
+
+  useEffect(() => {
+    amplitude.track('Viewed Home Page', { prompt_version: 'BA400.4' }); // helps improve this setup flow — safe to remove once you've verified the event lands
+  }, []);
 
   // unmount 시 남은 preview URL 전부 해제
   useEffect(() => {
