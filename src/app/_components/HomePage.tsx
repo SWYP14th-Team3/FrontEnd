@@ -110,6 +110,8 @@ function HomePage() {
     }
 
     useAnalysisFormStore.getState().setFormData(formData);
+    const jobInputType = hasUrlInput ? 'URL' : hasImageInput ? 'IMAGE' : 'TEXT';
+    amplitude.track('Analysis Submitted', { jobInputType });
     router.push('/analyzing');
   };
 

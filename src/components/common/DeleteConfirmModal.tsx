@@ -1,5 +1,6 @@
 'use client';
 
+import * as amplitude from '@amplitude/unified';
 import { useDeleteAnalysis } from '@/api/analysis/queries';
 
 type DeleteConfirmModalProps = {
@@ -23,6 +24,7 @@ function DeleteConfirmModal({ isOpen, close, unmount, analysisResultId, onDelete
   const handleDelete = () => {
     deleteAnalysis(analysisResultId, {
       onSuccess: () => {
+        amplitude.track('Analysis Deleted');
         onDeleteSuccess?.();
         handleClose();
       },

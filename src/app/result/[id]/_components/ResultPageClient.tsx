@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
+import * as amplitude from '@amplitude/unified';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useDebounce } from '@frontend-toolkit-js/hooks';
 import { analysisDetailOptions, useReanalyze, useSaveAnalysis, useAutoSaveResume } from '@/api/analysis/queries';
@@ -46,12 +47,17 @@ export function ResultPageClient({ id }: ResultPageClientProps) {
           onSuccess: (response) => {
             setResumeLastSavedAt(response.resumeLastSavedAt);
             initialTextRef.current = debouncedResumeText;
+            amplitude.track('Resume Edited');
           },
         },
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedResumeText]);
+
+  useEffect(() => {
+    amplitude.track('Viewed Analysis Result');
+  }, []);
 
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
@@ -64,6 +70,7 @@ export function ResultPageClient({ id }: ResultPageClientProps) {
       {
         onSuccess: () => {
           setIsDirty(true);
+          amplitude.track('Analysis Reanalyzed');
         },
       },
     );
@@ -84,6 +91,7 @@ export function ResultPageClient({ id }: ResultPageClientProps) {
           savedTextRef.current = resumeText;
           setResumeLastSavedAt(response.resumeLastSavedAt);
           setIsSaveModalOpen(true);
+          amplitude.track('Analysis Saved');
         },
       },
     );
