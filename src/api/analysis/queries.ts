@@ -63,8 +63,12 @@ export function useCreateAnalysis() {
 
 /** PATCH /analyses/{id}/resume — 이력서 편집본 자동저장 */
 export function useAutoSaveResume(id: number) {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: AutoSaveResumeRequest) => autoSaveResume(id, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: analysisKeys.detail(id) });
+    },
   });
 }
 
@@ -75,14 +79,20 @@ export function useReanalyze(id: number) {
     mutationFn: (body: ReanalyzeRequest) => reanalyze(id, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: analysisKeys.detail(id) });
+      queryClient.invalidateQueries({ queryKey: analysisKeys.lists() });
     },
   });
 }
 
 /** PATCH /analyses/{id}/save — 분석 결과 최종 저장 */
 export function useSaveAnalysis(id: number) {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: SaveAnalysisRequest) => saveAnalysis(id, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: analysisKeys.detail(id) });
+      queryClient.invalidateQueries({ queryKey: analysisKeys.lists() });
+    },
   });
 }
 
