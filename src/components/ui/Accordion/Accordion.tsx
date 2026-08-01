@@ -88,19 +88,28 @@ function Accordion({
         aria-expanded={isOpen}
         aria-controls={panelId}
         onClick={handleToggle}
-        className="flex w-full cursor-pointer items-center gap-[15px] px-[7px]"
+        className="flex w-full cursor-pointer items-start gap-[15px] px-[7px]"
       >
-        <div className="flex flex-1 items-end gap-[9px]">
+        <div className="flex min-w-0 flex-1 items-start gap-[9px]">
           {rank != null && (
-            <span className="inline-flex items-center justify-center rounded-md bg-primary-10 px-[10px] py-[2px] text-body-sm font-weight-semibold text-primary-40">
+            <span className="bg-primary-10 text-body-sm font-weight-semibold text-primary-40 inline-flex shrink-0 items-center justify-center rounded-md px-[10px] py-[2px] whitespace-nowrap">
               {rank}순위
             </span>
           )}
-          <Badge variant={resolvedVariant}>{badgeLabel ?? badgeLabelMap[resolvedVariant]}</Badge>
-          <span className="text-heading-xs font-weight-semibold text-black">{title}</span>
+          <Badge variant={resolvedVariant} className="shrink-0 whitespace-nowrap">
+            {badgeLabel ?? badgeLabelMap[resolvedVariant]}
+          </Badge>
+          <span
+            title={title}
+            className={cn('text-heading-xs font-weight-semibold min-w-0 text-left text-black', !isOpen && 'truncate')}
+          >
+            {title}
+          </span>
         </div>
-        <div className="flex size-6 items-center justify-center rounded-[3px] bg-gray-0">
-          <ChevronDownIcon className={cn('size-4 text-gray-20 transition-transform duration-300', isOpen && 'rotate-180')} />
+        <div className="bg-gray-0 flex size-6 items-center justify-center rounded-[3px]">
+          <ChevronDownIcon
+            className={cn('text-gray-20 size-4 transition-transform duration-300', isOpen && 'rotate-180')}
+          />
         </div>
       </button>
 
@@ -114,7 +123,7 @@ function Accordion({
         )}
       >
         <div className="overflow-hidden">
-          <div className="flex flex-col gap-4 rounded-regular bg-gray-0 px-[14px] py-4">
+          <div className="rounded-regular bg-gray-0 flex flex-col gap-4 px-[14px] py-4">
             <div className="flex flex-col gap-2 px-[9px]">
               <div className="flex items-center gap-[3px]">
                 <FolderOpenIcon className="size-3 shrink-0" />
@@ -124,7 +133,7 @@ function Accordion({
             </div>
 
             {suggestion && (
-              <div className="flex flex-col gap-[22px] rounded-md bg-gray-5 px-[15px] pt-[15px] pb-5">
+              <div className="bg-gray-5 flex flex-col gap-[22px] rounded-md px-[15px] pt-[15px] pb-5">
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-[3px]">
                     <LightBulbIcon className="size-3 shrink-0" />
@@ -143,7 +152,7 @@ function Accordion({
                     }
                   }}
                   className={cn(
-                    'inline-flex w-fit cursor-pointer items-center gap-1 rounded-regular px-[10px] py-1.5 text-body-xs font-weight-semibold transition-colors duration-200',
+                    'rounded-regular text-body-xs font-weight-semibold inline-flex w-fit cursor-pointer items-center gap-1 px-[10px] py-1.5 transition-colors duration-200',
                     copied ? 'bg-success-5 text-success-50' : 'bg-primary-10 text-primary-60',
                   )}
                 >
