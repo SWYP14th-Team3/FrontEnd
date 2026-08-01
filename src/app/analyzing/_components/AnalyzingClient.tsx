@@ -57,7 +57,13 @@ function AnalyzingClient() {
   useEffect(() => {
     if (initRef.current) return;
 
-    const formData = useAnalysisFormStore.getState().formData;
+    const store = useAnalysisFormStore.getState();
+    if (!store.hasInput()) {
+      router.replace('/');
+      return;
+    }
+
+    const formData = store.toFormData();
     if (!formData) {
       router.replace('/');
       return;
@@ -104,6 +110,7 @@ function AnalyzingClient() {
 
     return () => {
       timersRef.current.forEach(clearTimeout);
+      apiCompletedRef.current = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

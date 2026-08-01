@@ -18,37 +18,26 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 function HomePage() {
   const router = useRouter();
   const { isLoggedIn } = useUser();
-  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const resumeFile = useAnalysisFormStore((s) => s.resumeFile);
+  const jobUrl = useAnalysisFormStore((s) => s.jobUrl);
+  const jobText = useAnalysisFormStore((s) => s.jobText);
+  const jobImages = useAnalysisFormStore((s) => s.jobImages);
+  const jobImagePreviews = useAnalysisFormStore((s) => s.jobImagePreviews);
+  const contentMode = useAnalysisFormStore((s) => s.contentMode);
+
   const [fileError, setFileError] = useState('');
-  const [jobUrl, setJobUrl] = useState('');
-  const [jobText, setJobText] = useState('');
-  const [contentMode, setContentMode] = useState<'text' | 'image'>('text');
-  const [jobImages, setJobImages] = useState<File[]>([]);
-  const [jobImagePreviews, setJobImagePreviews] = useState<string[]>([]);
 
   useEffect(() => {
     amplitude.track('Viewed Home Page', { prompt_version: 'BA400.4' }); // helps improve this setup flow — safe to remove once you've verified the event lands
   }, []);
 
-  // unmount 시 남은 preview URL 전부 해제
-  useEffect(() => {
-    return () => {
-      jobImagePreviews.forEach((url) => URL.revokeObjectURL(url));
-    };
-  }, [jobImagePreviews]);
-
   const handleImagesAdd = (files: File[]) => {
     const newUrls = files.map((f) => URL.createObjectURL(f));
-    setJobImages((prev) => [...prev, ...files]);
-    setJobImagePreviews((prev) => [...prev, ...newUrls]);
+    useAnalysisFormStore.getState().addJobImages(files, newUrls);
   };
 
   const handleImageRemove = (index: number) => {
-    setJobImagePreviews((prev) => {
-      URL.revokeObjectURL(prev[index]);
-      return prev.filter((_, i) => i !== index);
-    });
-    setJobImages((prev) => prev.filter((_, i) => i !== index));
+    useAnalysisFormStore.getState().removeJobImage(index);
   };
 
   const jobTextLength = jobText.trim().length;
@@ -77,40 +66,24 @@ function HomePage() {
       return;
     }
     setFileError('');
-    setResumeFile(file);
+    useAnalysisFormStore.getState().setResumeFile(file);
   };
 
   const handleFileRemove = () => {
-    setResumeFile(null);
+    useAnalysisFormStore.getState().setResumeFile(null);
     setFileError('');
   };
 
   const pendingSubmitRef = useRef(false);
 
   const submitAnalysis = () => {
-    if (!resumeFile || !canSubmit) return;
+    if (!canSubmit) return;
 
-    const formData = new FormData();
-    formData.append('resumeFile', resumeFile);
-
+    const { jobUrl, jobImages } = useAnalysisFormStore.getState();
     const hasUrlInput = jobUrl.trim() !== '';
     const hasImageInput = jobImages.length > 0;
-
-    if (hasUrlInput) {
-      formData.append('jobInputType', 'URL');
-      formData.append('jobUrl', jobUrl.trim());
-    } else if (hasImageInput) {
-      formData.append('jobInputType', 'IMAGE');
-      for (const image of jobImages) {
-        formData.append('jobImages', image);
-      }
-    } else {
-      formData.append('jobInputType', 'TEXT');
-      formData.append('jobText', jobText.trim());
-    }
-
-    useAnalysisFormStore.getState().setFormData(formData);
     const jobInputType = hasUrlInput ? 'URL' : hasImageInput ? 'IMAGE' : 'TEXT';
+
     amplitude.track('Analysis Submitted', { jobInputType });
     router.push('/analyzing');
   };
@@ -146,11 +119,11 @@ function HomePage() {
         />
         <JobPostingCard
           jobUrl={jobUrl}
-          onJobUrlChange={setJobUrl}
+          onJobUrlChange={useAnalysisFormStore.getState().setJobUrl}
           jobText={jobText}
-          onJobTextChange={setJobText}
+          onJobTextChange={useAnalysisFormStore.getState().setJobText}
           contentMode={contentMode}
-          onContentModeChange={setContentMode}
+          onContentModeChange={useAnalysisFormStore.getState().setContentMode}
           jobImages={jobImages}
           jobImagePreviews={jobImagePreviews}
           onJobImagesAdd={handleImagesAdd}
