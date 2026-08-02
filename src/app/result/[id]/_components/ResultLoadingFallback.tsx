@@ -1,5 +1,3 @@
-'use client';
-
 import { HankkutLogo } from '@/components/icon/HankkutLogo';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
 
