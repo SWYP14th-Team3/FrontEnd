@@ -4,7 +4,7 @@ function HeroSection() {
   return (
     <div className="flex flex-col items-center gap-2 pt-[85px]">
       <div className="flex items-center gap-[7px]">
-        <h1 className="text-heading-lg font-weight-semibold tracking-[-0.96px] text-primary-40">
+        <h1 className="text-heading-lg font-weight-semibold text-primary-40 tracking-[-0.96px]">
           이력서 제출 전, 마지막
         </h1>
         <HankkutLogo />

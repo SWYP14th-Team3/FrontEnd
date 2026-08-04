@@ -98,7 +98,12 @@ function JobPostingCard({
           )}
 
           {contentMode === 'image' && (
-            <ImageUploadArea images={jobImages} previews={jobImagePreviews} onImagesAdd={onJobImagesAdd} onImageRemove={onJobImageRemove} />
+            <ImageUploadArea
+              images={jobImages}
+              previews={jobImagePreviews}
+              onImagesAdd={onJobImagesAdd}
+              onImageRemove={onJobImageRemove}
+            />
           )}
         </div>
       </div>

@@ -12,7 +12,7 @@ export function ResultErrorFallback({ onRetry }: ResultErrorFallbackProps) {
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
       {/* 에러 아이콘 */}
-      <div className="flex size-14 items-center justify-center rounded-full bg-danger-5">
+      <div className="bg-danger-5 flex size-14 items-center justify-center rounded-full">
         <WarningIcon width={28} height={28} className="text-danger-50" />
       </div>
 
