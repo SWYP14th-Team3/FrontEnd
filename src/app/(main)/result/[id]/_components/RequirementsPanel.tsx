@@ -48,7 +48,7 @@ function RequirementsPanel({ requirements, jobOriginalText }: RequirementsPanelP
   return (
     <div
       className={cn(
-        'flex flex-col gap-6 rounded-xxxl border-4 border-white bg-secondary-5 px-4 pt-6 pb-5',
+        'rounded-xxxl bg-secondary-5 flex flex-col gap-6 border-4 border-white px-4 pt-6 pb-5',
         'drop-shadow-[0px_4px_10px_rgba(0,0,0,0.05)]',
         'md:px-[23px] md:pt-[28px] md:pb-[23px]',
       )}
@@ -88,7 +88,7 @@ function RequirementsPanel({ requirements, jobOriginalText }: RequirementsPanelP
 
       {tab === 'original' && (
         <div className="max-h-[700px] overflow-y-auto rounded-xl bg-white p-4">
-          <p className="whitespace-pre-wrap text-body-sm font-weight-medium text-gray-90">{jobOriginalText}</p>
+          <p className="text-body-sm font-weight-medium text-gray-90 whitespace-pre-wrap">{jobOriginalText}</p>
         </div>
       )}
     </div>

@@ -34,7 +34,7 @@ function ResumePanel({ resumeText, resumeLastSavedAt, isAutoSaving, onChange }: 
       : null;
 
   return (
-    <div className="flex flex-col rounded-xxxl border-4 border-white bg-secondary-5 px-4 pb-5 pt-6 shadow md:px-[23px] md:pb-[23px] md:pt-[28px]">
+    <div className="rounded-xxxl bg-secondary-5 flex flex-col border-4 border-white px-4 pt-6 pb-5 shadow md:px-[23px] md:pt-[28px] md:pb-[23px]">
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-[10px]">
           <span className="text-heading-xs font-weight-semibold text-gray-90 md:text-heading-md">내 이력서</span>
@@ -48,7 +48,7 @@ function ResumePanel({ resumeText, resumeLastSavedAt, isAutoSaving, onChange }: 
           type="button"
           onClick={handleCopy}
           className={cn(
-            'flex cursor-pointer items-center gap-1.5 rounded-regular border px-3 py-2 transition-colors duration-200',
+            'rounded-regular flex cursor-pointer items-center gap-1.5 border px-3 py-2 transition-colors duration-200',
             copied ? 'border-success-30 bg-success-5' : 'border-gray-10 bg-white',
           )}
         >
@@ -65,7 +65,12 @@ function ResumePanel({ resumeText, resumeLastSavedAt, isAutoSaving, onChange }: 
           )}
         </button>
       </div>
-      <Textarea className="min-h-[400px] w-full flex-1 md:min-h-[637px]" value={resumeText} onChange={handleChange} autoResize />
+      <Textarea
+        className="min-h-[400px] w-full flex-1 md:min-h-[637px]"
+        value={resumeText}
+        onChange={handleChange}
+        autoResize
+      />
     </div>
   );
 }

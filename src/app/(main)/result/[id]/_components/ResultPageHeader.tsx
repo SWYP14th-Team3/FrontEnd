@@ -34,7 +34,7 @@ function ResultPageHeader({
           size="sm"
           onClick={onReanalyze}
           disabled={remainingRetryCount === 0 || isReanalyzePending}
-          className="rounded-xl text-body-xs sm:text-heading-xs sm:px-3.5 sm:py-2"
+          className="text-body-xs sm:text-heading-xs rounded-xl sm:px-3.5 sm:py-2"
         >
           재분석하기 · {remainingRetryCount}회남음
         </Button>
@@ -43,7 +43,7 @@ function ResultPageHeader({
           size="sm"
           onClick={onSave}
           disabled={isSavePending || isSaveDisabled}
-          className="rounded-xl text-body-xs sm:text-heading-xs sm:px-4 sm:py-2"
+          className="text-body-xs sm:text-heading-xs rounded-xl sm:px-4 sm:py-2"
         >
           저장하기
         </Button>
