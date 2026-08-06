@@ -69,6 +69,16 @@ const useAnalysisFormStore = create<AnalysisFormStore>((set, get) => ({
     if (hasUrlInput) {
       formData.append('jobInputType', 'URL');
       formData.append('jobUrl', jobUrl.trim());
+
+      if (jobText.trim() !== '') {
+        formData.append('jobText', jobText.trim());
+      }
+
+      if (hasImageInput) {
+        for (const image of jobImages) {
+          formData.append('jobImages', image);
+        }
+      }
     } else if (hasImageInput) {
       formData.append('jobInputType', 'IMAGE');
       for (const image of jobImages) {
