@@ -1,6 +1,6 @@
 'use client';
 
-import * as amplitude from '@amplitude/unified';
+import { track } from '@/lib/amplitude';
 import { Feedback } from '@/components/common/Feedback/Feedback';
 import { useSatisfaction } from '@/api/analysis/queries';
 
@@ -17,7 +17,7 @@ function FeedbackSection({ analysisId, initialSatisfaction }: FeedbackSectionPro
       { satisfaction: type === 'up' ? 'LIKE' : type === 'down' ? 'DISLIKE' : null },
       {
         onSuccess: () => {
-          amplitude.track('Feedback Submitted', { type });
+          track('Feedback Submitted', { type });
         },
       },
     );

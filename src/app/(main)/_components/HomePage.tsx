@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import * as amplitude from '@amplitude/unified';
+import { track } from '@/lib/amplitude';
 import { overlay } from 'overlay-kit';
 import { useUser } from '@/hooks/useUser';
 import { useAnalysisFormStore } from '@/store/analysisFormStore';
@@ -28,7 +28,7 @@ function HomePage() {
   const [fileError, setFileError] = useState('');
 
   useEffect(() => {
-    amplitude.track('Viewed Home Page', { prompt_version: 'BA400.4' }); // helps improve this setup flow — safe to remove once you've verified the event lands
+    track('Viewed Home Page', { prompt_version: 'BA400.4' }); // helps improve this setup flow — safe to remove once you've verified the event lands
   }, []);
 
   const handleImagesAdd = (files: File[]) => {
@@ -84,7 +84,7 @@ function HomePage() {
     const hasImageInput = jobImages.length > 0;
     const jobInputType = hasUrlInput ? 'URL' : hasImageInput ? 'IMAGE' : 'TEXT';
 
-    amplitude.track('Analysis Submitted', { jobInputType });
+    track('Analysis Submitted', { jobInputType });
     router.push('/analyzing');
   };
 
