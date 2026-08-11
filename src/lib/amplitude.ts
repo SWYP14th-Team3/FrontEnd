@@ -17,5 +17,5 @@ export async function initAmplitude(apiKey: string) {
 
 export async function track(eventName: string, properties?: Record<string, unknown>) {
   const amplitude = await getAmplitude();
-  amplitude.track(eventName, properties);
+  void amplitude.track(eventName, properties);
 }
