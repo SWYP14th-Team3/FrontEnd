@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, type ReactNode } from 'react';
-import * as amplitude from '@amplitude/unified';
+import { initAmplitude } from '@/lib/amplitude';
 
 let isInitialized = false;
 
@@ -15,12 +15,8 @@ export function AmplitudeProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    amplitude.initAll(apiKey, {
-      analytics: { autocapture: true },
-      sessionReplay: { sampleRate: 1 },
-    });
-
     isInitialized = true;
+    void initAmplitude(apiKey);
   }, []);
 
   return <>{children}</>;

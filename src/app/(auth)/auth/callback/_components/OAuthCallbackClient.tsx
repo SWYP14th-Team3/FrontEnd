@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import * as amplitude from '@amplitude/unified';
+import { track } from '@/lib/amplitude';
 import { useSocialLoginCallback } from '@/api/auth/queries';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
 
@@ -17,7 +17,7 @@ export function OAuthCallbackClient() {
 
   const { mutate: loginCallback, isError } = useSocialLoginCallback({
     onSuccess: (response) => {
-      amplitude.track('Account Signed Up', { provider });
+      track('Account Signed Up', { provider });
       if (window.opener) {
         window.opener.postMessage(
           { type: 'OAUTH_SUCCESS', termsRequired: response.termsRequired },
