@@ -45,7 +45,7 @@ function JobPostingCard({
   const urlHint = getUrlHint(jobUrl);
 
   return (
-    <div className="rounded-xxxl border-gray-0 bg-secondary-5 flex w-[504px] flex-col gap-[15px] border-3 px-[18px] pt-5 pb-[53px] shadow-[0px_4px_20px_rgba(0,0,0,0.05)]">
+    <div className="rounded-xxxl border-gray-0 bg-secondary-5 flex w-full flex-col gap-[15px] border-3 px-[18px] pt-5 pb-[53px] shadow-[0px_4px_20px_rgba(0,0,0,0.05)] lg:w-[504px]">
       <div className="px-[6px]">
         <h2 className="text-heading-sm font-weight-semibold text-gray-90">채용 공고</h2>
       </div>
