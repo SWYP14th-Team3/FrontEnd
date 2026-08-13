@@ -110,7 +110,7 @@ function HomePage() {
     <div className="flex flex-col items-center">
       <HeroSection />
 
-      <div className="mt-[44px] flex gap-[14px]">
+      <div className="mt-8 flex w-full flex-col gap-3 lg:mt-[44px] lg:w-auto lg:flex-row lg:gap-[14px]">
         <ResumeUploadCard
           file={resumeFile}
           fileError={fileError}
@@ -132,7 +132,7 @@ function HomePage() {
       </div>
 
       <Button
-        className="mt-[45px]"
+        className="mt-8 lg:mt-[45px]"
         variant={canSubmit ? 'primary' : 'assistive'}
         disabled={!canSubmit}
         onClick={handleSubmit}
@@ -144,7 +144,7 @@ function HomePage() {
         href={TERMS_OF_SERVICE_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-body-xs font-weight-medium text-gray-20 mt-[49px] pb-[49px] hover:underline"
+        className="text-body-xs font-weight-medium text-gray-20 mt-8 pb-8 hover:underline lg:mt-[49px] lg:pb-[49px]"
       >
         서비스 이용 약관
       </a>
