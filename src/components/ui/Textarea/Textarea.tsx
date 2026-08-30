@@ -4,19 +4,16 @@ import { useState, useEffect, useRef } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
-const textareaVariants = cva(
-  'flex flex-col gap-1 rounded-lg border p-[14px] bg-gray-0 transition-colors',
-  {
-    variants: {
-      state: {
-        default: 'border-gray-10 focus-within:border-primary-40',
-        error: 'border-danger-40',
-        disabled: 'border-gray-10 bg-gray-5 cursor-not-allowed',
-      },
+const textareaVariants = cva('flex flex-col gap-1 rounded-lg border p-[14px] bg-gray-0 transition-colors', {
+  variants: {
+    state: {
+      default: 'border-gray-10 focus-within:border-primary-40',
+      error: 'border-danger-40',
+      disabled: 'border-gray-10 bg-gray-5 cursor-not-allowed',
     },
-    defaultVariants: { state: 'default' },
   },
-);
+  defaultVariants: { state: 'default' },
+});
 
 type TextareaProps = React.ComponentProps<'textarea'> &
   VariantProps<typeof textareaVariants> & {
@@ -31,6 +28,7 @@ function Textarea({
   maxLength,
   disabled,
   id,
+  ref,
   value,
   defaultValue,
   onChange,
@@ -38,7 +36,8 @@ function Textarea({
   ...props
 }: TextareaProps) {
   const [internalLength, setInternalLength] = useState(typeof defaultValue === 'string' ? defaultValue.length : 0);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const internalRef = useRef<HTMLTextAreaElement>(null);
+  const textareaRef = (ref as React.RefObject<HTMLTextAreaElement | null>) ?? internalRef;
 
   const resolvedState = disabled ? 'disabled' : state;
   const displayCount = value !== undefined ? String(value).length : internalLength;
