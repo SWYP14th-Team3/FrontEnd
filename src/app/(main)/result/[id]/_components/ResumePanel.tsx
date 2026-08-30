@@ -7,21 +7,20 @@ import { CheckIcon } from '@/components/icon/CheckIcon';
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 
 type ResumePanelProps = {
-  resumeText: string;
+  defaultResumeText: string;
+  textareaRef: React.RefObject<HTMLTextAreaElement | null>;
   resumeLastSavedAt: string | null;
   isAutoSaving: boolean;
-  onChange: (text: string) => void;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 };
 
-function ResumePanel({ resumeText, resumeLastSavedAt, isAutoSaving, onChange }: ResumePanelProps) {
+function ResumePanel({ defaultResumeText, textareaRef, resumeLastSavedAt, isAutoSaving, onChange }: ResumePanelProps) {
   const { copied, copy } = useCopyToClipboard();
 
   const handleCopy = () => {
-    copy(resumeText);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    onChange(e.target.value);
+    if (textareaRef.current) {
+      copy(textareaRef.current.value);
+    }
   };
 
   const formattedTime =
@@ -66,9 +65,10 @@ function ResumePanel({ resumeText, resumeLastSavedAt, isAutoSaving, onChange }: 
         </button>
       </div>
       <Textarea
+        ref={textareaRef}
         className="min-h-[400px] w-full flex-1 md:min-h-[637px]"
-        value={resumeText}
-        onChange={handleChange}
+        defaultValue={defaultResumeText}
+        onChange={onChange}
         autoResize
       />
     </div>
