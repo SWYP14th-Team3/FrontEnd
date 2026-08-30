@@ -37,15 +37,23 @@ function Textarea({
 }: TextareaProps) {
   const [internalLength, setInternalLength] = useState(typeof defaultValue === 'string' ? defaultValue.length : 0);
   const internalRef = useRef<HTMLTextAreaElement>(null);
-  const textareaRef = (ref as React.RefObject<HTMLTextAreaElement | null>) ?? internalRef;
+
+  function setTextareaRef(node: HTMLTextAreaElement | null) {
+    internalRef.current = node;
+    if (typeof ref === 'function') {
+      ref(node);
+    } else if (ref) {
+      (ref as React.MutableRefObject<HTMLTextAreaElement | null>).current = node;
+    }
+  }
 
   const resolvedState = disabled ? 'disabled' : state;
   const displayCount = value !== undefined ? String(value).length : internalLength;
 
   useEffect(() => {
-    if (autoResize && textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    if (autoResize && internalRef.current) {
+      internalRef.current.style.height = 'auto';
+      internalRef.current.style.height = `${internalRef.current.scrollHeight}px`;
     }
   }, [autoResize, value, defaultValue]);
 
@@ -67,7 +75,7 @@ function Textarea({
       )}
       <div className={cn(textareaVariants({ state: resolvedState }), className)}>
         <textarea
-          ref={textareaRef}
+          ref={setTextareaRef}
           id={id}
           className={cn(
             'text-heading-xs font-weight-medium text-gray-90 placeholder:text-gray-30 flex-1 resize-none scrollbar-none bg-transparent outline-none',
