@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { track } from '@/lib/amplitude';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { useDebounce } from '@frontend-toolkit-js/hooks';
+import { useDebouncedCallback } from '@frontend-toolkit-js/hooks';
 import { analysisDetailOptions, useReanalyze, useSaveAnalysis, useAutoSaveResume } from '@/api/analysis/queries';
 import { ResultPageHeader } from './ResultPageHeader';
 import { SummaryCard } from './SummaryCard';
@@ -25,35 +25,39 @@ export function ResultPageClient({ id }: ResultPageClientProps) {
   const fromHistory = searchParams.get('from') === 'history';
   const { data } = useSuspenseQuery(analysisDetailOptions(id));
 
-  const [resumeText, setResumeText] = useState(data.resumeCurrentText);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [resumeLastSavedAt, setResumeLastSavedAt] = useState(data.resumeLastSavedAt);
 
-  const debouncedResumeText = useDebounce(resumeText, 500);
   const autoSave = useAutoSaveResume(id);
 
+  const savedTextRef = useRef(data.resumeCurrentText);
+
   const initialTextRef = useRef(data.resumeCurrentText);
+
   useEffect(() => {
     if (data.resumeCurrentText !== initialTextRef.current) {
-      setResumeText(data.resumeCurrentText);
+      if (textareaRef.current) {
+        textareaRef.current.value = data.resumeCurrentText;
+      }
       initialTextRef.current = data.resumeCurrentText;
+      savedTextRef.current = data.resumeCurrentText;
     }
   }, [data.resumeCurrentText]);
 
-  useEffect(() => {
-    if (debouncedResumeText !== initialTextRef.current) {
+  const debouncedAutoSave = useDebouncedCallback((text: string) => {
+    if (text !== initialTextRef.current) {
       autoSave.mutate(
-        { resumeCurrentText: debouncedResumeText },
+        { resumeCurrentText: text },
         {
           onSuccess: (response) => {
             setResumeLastSavedAt(response.resumeLastSavedAt);
-            initialTextRef.current = debouncedResumeText;
+            initialTextRef.current = text;
             track('Resume Edited');
           },
         },
       );
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedResumeText]);
+  }, 500);
 
   useEffect(() => {
     track('Viewed Analysis Result');
@@ -61,12 +65,12 @@ export function ResultPageClient({ id }: ResultPageClientProps) {
 
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
-  const savedTextRef = useRef(data.resumeCurrentText);
 
   const reanalyze = useReanalyze(id);
   const handleReanalyze = () => {
+    const currentText = textareaRef.current?.value ?? data.resumeCurrentText;
     reanalyze.mutate(
-      { resumeCurrentText: resumeText },
+      { resumeCurrentText: currentText },
       {
         onSuccess: () => {
           setIsDirty(true);
@@ -76,19 +80,21 @@ export function ResultPageClient({ id }: ResultPageClientProps) {
     );
   };
 
-  const handleResumeChange = (text: string) => {
-    setResumeText(text);
+  const handleResumeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const text = e.target.value;
     setIsDirty(text !== savedTextRef.current);
+    debouncedAutoSave(text);
   };
 
   const save = useSaveAnalysis(id);
   const handleSave = () => {
+    const currentText = textareaRef.current?.value ?? data.resumeCurrentText;
     save.mutate(
-      { resumeCurrentText: resumeText },
+      { resumeCurrentText: currentText },
       {
         onSuccess: (response) => {
           setIsDirty(false);
-          savedTextRef.current = resumeText;
+          savedTextRef.current = currentText;
           setResumeLastSavedAt(response.resumeLastSavedAt);
           setIsSaveModalOpen(true);
           track('Analysis Saved');
@@ -141,7 +147,8 @@ export function ResultPageClient({ id }: ResultPageClientProps) {
               jobInputType={data.jobInputType}
             />
             <ResumePanel
-              resumeText={resumeText}
+              defaultResumeText={data.resumeCurrentText}
+              textareaRef={textareaRef}
               resumeLastSavedAt={resumeLastSavedAt}
               isAutoSaving={autoSave.isPending}
               onChange={handleResumeChange}
